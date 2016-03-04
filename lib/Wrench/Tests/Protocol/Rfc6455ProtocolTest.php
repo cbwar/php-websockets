@@ -1,14 +1,10 @@
 <?php
 
-namespace Wrench\Tests\Protocol;
 
-use Wrench\Protocol\Rfc6455Protocol;
-use Wrench\Tests\Protocol\ProtocolTest;
-
-class Rfc6455ProtocolTest extends ProtocolTest
+class Wrench_Tests_Protocol_Rfc6455ProtocolTest extends Wrench_Tests_Protocol_ProtocolTest
 {
     protected function getClass()
     {
-        return 'Wrench\Protocol\Rfc6455Protocol';
+        return 'Wrench_Protocol_Rfc6455Protocol';
     }
 }

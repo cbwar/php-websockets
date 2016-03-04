@@ -9,13 +9,10 @@
  * get the normal security prompt.
  */
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-require __DIR__ . '/../vendor/autoload.php';
+require "../bootstrap.php";
 
 // Generate PEM file
-$pemFile                = __DIR__ . '/generated.pem';
+$pemFile                = dirname(__FILE__) . '/generated.pem';
 $pemPassphrase          = null;
 $countryName            = "DE";
 $stateOrProvinceName    = "none";
@@ -25,7 +22,7 @@ $organizationalUnitName = "none";
 $commonName             = "127.0.0.1";
 $emailAddress           = "someone@example.com";
 
-Wrench\Util\Ssl::generatePEMFile(
+Wrench_Util_Ssl::generatePEMFile(
     $pemFile,
     $pemPassphrase,
     $countryName,
@@ -38,7 +35,7 @@ Wrench\Util\Ssl::generatePEMFile(
 );
 
 // User can use tls in place of ssl
-$server = new \Wrench\Server('wss://127.0.0.1:8000/', array(
+$server = new Wrench_Server('wss://0.0.0.0:8000/', array(
      'connection_manager_options' => array(
          'socket_master_options' => array(
              'server_ssl_local_cert'        => $pemFile,
@@ -49,6 +46,6 @@ $server = new \Wrench\Server('wss://127.0.0.1:8000/', array(
      )
 ));
 
-$server->registerApplication('echo', new \Wrench\Application\EchoApplication());
-$server->registerApplication('time', new \Wrench\Application\ServerTimeApplication());
+$server->registerApplication('echo', new Wrench_Application_EchoApplication());
+$server->registerApplication('time', new Wrench_Application_ServerTimeApplication());
 $server->run();

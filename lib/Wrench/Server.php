@@ -1,11 +1,5 @@
 <?php
 
-namespace Wrench;
-
-use Wrench\Util\Configurable;
-
-use \Closure;
-use \InvalidArgumentException;
 
 /**
  * WebSocket server
@@ -17,7 +11,7 @@ use \InvalidArgumentException;
  * @author Simon Samtleben <web@lemmingzshadow.net>
  * @author Dominic Scheirlinck <dominic@varspool.com>
  */
-class Server extends Configurable
+class Wrench_Server extends Wrench_Util_Configurable
 {
     /**#@+
      * Events
@@ -52,9 +46,9 @@ class Server extends Configurable
      * in the options array. It should take a string message and string priority
      * as parameters.
      *
-     * @var Closure
+     * @var string
      */
-    protected $logger;
+    protected $logger = '';
 
     /**
      * Event listeners
@@ -66,16 +60,16 @@ class Server extends Configurable
     protected $listeners = array();
 
     /**
-     * Connection manager
+     * Wrench_Connection manager
      *
-     * @var ConnectionManager
+     * @var Wrench_ConnectionManager
      */
     protected $connectionManager;
 
     /**
      * Applications
      *
-     * @var array<string => Application>
+     * @var array<string => Wrench_Application_Application>
      */
     protected $applications = array();
 
@@ -99,7 +93,7 @@ class Server extends Configurable
      * Configure options
      *
      * Options include
-     *   - socket_class      => The socket class to use, defaults to ServerSocket
+     *   - socket_class      => The socket class to use, defaults to Wrench_Socket_ServerSocket
      *   - socket_options    => An array of socket options
      *   - logger            => Closure($message, $priority = 'info'), used
      *                                 for logging
@@ -110,7 +104,7 @@ class Server extends Configurable
     protected function configure(array $options)
     {
         $options = array_merge(array(
-            'connection_manager_class'   => 'Wrench\ConnectionManager',
+            'connection_manager_class'   => 'Wrench_ConnectionManager',
             'connection_manager_options' => array()
         ), $options);
 
@@ -129,9 +123,12 @@ class Server extends Configurable
     {
         // Default logger
         if (!isset($this->options['logger'])) {
-            $this->options['logger'] = function ($message, $priority = 'info') {
-                printf("%s: %s%s", $priority, $message, PHP_EOL);
-            };
+            if (!function_exists('logger_default_function')) {
+				function logger_default_function($message, $priority = 'info') {
+                	printf("%s: %s%s", $priority, $message, PHP_EOL);
+				}
+			}
+			$this->options['logger'] = 'logger_default_function';
         }
         $this->setLogger($this->options['logger']);
     }
@@ -151,7 +148,7 @@ class Server extends Configurable
     /**
      * Gets the connection manager
      *
-     * @return \Wrench\ConnectionManager
+     * @return Wrench_ConnectionManager
      */
     public function getConnectionManager()
     {
@@ -175,7 +172,7 @@ class Server extends Configurable
     public function setLogger($logger)
     {
         if (!is_callable($logger)) {
-            throw new \InvalidArgumentException('Logger must be callable');
+            throw new InvalidArgumentException('Logger must be callable');
         }
         $this->logger = $logger;
     }
@@ -244,7 +241,7 @@ class Server extends Configurable
     /**
      * Adds a listener
      *
-     * Provide an event (see the Server::EVENT_* constants) and a callback
+     * Provide an event (see the Wrench_Server::EVENT_* constants) and a callback
      * closure. Some arguments may be provided to your callback, such as the
      * connection the caused the event.
      *
@@ -270,7 +267,7 @@ class Server extends Configurable
      * Returns a server application.
      *
      * @param string $key Name of application.
-     * @return Application The application object.
+     * @return Wrench_Application_Application The application object.
      */
     public function getApplication($key)
     {

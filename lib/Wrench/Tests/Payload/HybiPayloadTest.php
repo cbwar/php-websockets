@@ -1,14 +1,10 @@
 <?php
 
-namespace Wrench\Tests\Protocol;
 
-use Wrench\Payload\HybiPayload;
-use Wrench\Tests\Payload\PayloadTest;
-
-class HybiPayloadTest extends PayloadTest
+class Wrench_Tests_Payload_HybiPayloadTest extends Wrench_Tests_Payload_PayloadTest
 {
     protected function getClass()
     {
-        return 'Wrench\Payload\HybiPayload';
+        return 'Wrench_Payload_HybiPayload';
     }
 }

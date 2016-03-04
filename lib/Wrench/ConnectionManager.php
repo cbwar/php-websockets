@@ -1,35 +1,26 @@
 <?php
 
-namespace Wrench;
-
-use InvalidArgumentException;
-use Wrench\Util\Configurable;
-use Wrench\Exception\Exception as WrenchException;
-use Wrench\Exception\CloseException;
-use \Exception;
-use \Countable;
-
-class ConnectionManager extends Configurable implements Countable
+class Wrench_ConnectionManager extends Wrench_Util_Configurable implements Countable
 {
     const TIMEOUT_SELECT          = 0;
     const TIMEOUT_SELECT_MICROSEC = 200000;
 
     /**
-     * @var Server
+     * @var Wrench_Server
      */
     protected $server;
 
     /**
      * Master socket
      *
-     * @var ServerSocket
+     * @var Wrench_Socket_ServerSocket
      */
     protected $socket;
 
     /**
      * An array of client connections
      *
-     * @var array<int => Connection>
+     * @var array<int => Wrench_Connection>
      */
     protected $connections = array();
 
@@ -43,10 +34,10 @@ class ConnectionManager extends Configurable implements Countable
     /**
      * Constructor
      *
-     * @param Server $server
+     * @param Wrench_Server $server
      * @param array $options
      */
-    public function __construct(Server $server, array $options = array())
+    public function __construct(Wrench_Server $server, array $options = array())
     {
         $this->server = $server;
 
@@ -62,7 +53,7 @@ class ConnectionManager extends Configurable implements Countable
     }
 
     /**
-     * @see Wrench\Socket.Socket::configure()
+     * @see Wrench_Socket_Socket::configure()
      *   Options include:
      *     - timeout_select          => int, seconds, default 0
      *     - timeout_select_microsec => int, microseconds (NB: not milli), default: 200000
@@ -70,11 +61,11 @@ class ConnectionManager extends Configurable implements Countable
     protected function configure(array $options)
     {
         $options = array_merge(array(
-            'socket_master_class'     => 'Wrench\Socket\ServerSocket',
+            'socket_master_class'     => 'Wrench_Socket_ServerSocket',
             'socket_master_options'   => array(),
-            'socket_client_class'     => 'Wrench\Socket\ServerClientSocket',
+            'socket_client_class'     => 'Wrench_Socket_ServerClientSocket',
             'socket_client_options'   => array(),
-            'connection_class'        => 'Wrench\Connection',
+            'connection_class'        => 'Wrench_Connection',
             'connection_options'      => array(),
             'timeout_select'          => self::TIMEOUT_SELECT,
             'timeout_select_microsec' => self::TIMEOUT_SELECT_MICROSEC
@@ -131,10 +122,10 @@ class ConnectionManager extends Configurable implements Countable
     }
 
     /**
-     * Returns the Connection associated with the specified socket resource
+     * Returns the Wrench_Connection associated with the specified socket resource
      *
      * @param resource $socket
-     * @return Connection
+     * @return Wrench_Connection
      */
     protected function getConnectionForClientSocket($socket)
     {
@@ -182,12 +173,12 @@ class ConnectionManager extends Configurable implements Countable
         try {
             $new = $this->socket->accept();
         } catch (Exception $e) {
-            $this->server->log('Socket error: ' . $e, 'err');
+            $this->server->log('Wrench_Socket_Socket error: ' . $e, 'err');
             return;
         }
 
         $connection = $this->createConnection($new);
-        $this->server->notify(Server::EVENT_SOCKET_CONNECT, array($new, $connection));
+        $this->server->notify(Wrench_Server::EVENT_SOCKET_CONNECT, array($new, $connection));
     }
 
     /**
@@ -199,7 +190,7 @@ class ConnectionManager extends Configurable implements Countable
      * manager.
      *
      * @param resource $resource A socket resource
-     * @return Connection
+     * @return Wrench_Connection
      */
     protected function createConnection($resource)
     {
@@ -238,16 +229,16 @@ class ConnectionManager extends Configurable implements Countable
         }
 
         try {
-            $this->server->notify(Server::EVENT_CLIENT_DATA, array($socket, $connection));
+            $this->server->notify(Wrench_Server::EVENT_CLIENT_DATA, array($socket, $connection));
 
             $connection->process();
-        } catch (CloseException $e) {
-            $this->log('Client connection closed: ' . $e, 'notice');
+        } catch (Wrench_Exception_CloseException $e) {
+            $this->log('Wrench_Client connection closed: ' . $e, 'notice');
             $connection->close($e);
-        } catch (WrenchException $e) {
+        } catch (Wrench_Exception_Exception $e) {
             $this->log('Error on client socket: ' . $e, 'warning');
             $connection->close($e);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->log('Wrong input arguments: ' . $e, 'warning');
             $connection->close($e);
         }
@@ -296,7 +287,7 @@ class ConnectionManager extends Configurable implements Countable
     }
 
     /**
-     * @return \Wrench\Server
+     * @return Wrench_Server
      */
     public function getServer()
     {
@@ -306,9 +297,9 @@ class ConnectionManager extends Configurable implements Countable
     /**
      * Removes a connection
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
-    public function removeConnection(Connection $connection)
+    public function removeConnection(Wrench_Connection $connection)
     {
         $socket = $connection->getSocket();
 
@@ -326,7 +317,7 @@ class ConnectionManager extends Configurable implements Countable
         unset($this->resources[$index]);
 
         $this->server->notify(
-            Server::EVENT_SOCKET_DISCONNECT,
+            Wrench_Server::EVENT_SOCKET_DISCONNECT,
             array($connection->getSocket(), $connection)
         );
     }

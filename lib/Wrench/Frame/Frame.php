@@ -1,13 +1,9 @@
 <?php
 
-namespace Wrench\Frame;
-
-use Wrench\Exception\FrameException;
-
 /**
  * Represents a WebSocket frame
  */
-abstract class Frame
+abstract class Wrench_Frame_Frame
 {
     /**
      * The frame data length
@@ -46,7 +42,7 @@ abstract class Frame
     /**
      * Gets the length of the payload
      *
-     * @throws FrameException
+     * @throws Wrench_Exception_FrameException
      * @return int
      */
     abstract public function getLength();
@@ -57,9 +53,9 @@ abstract class Frame
      * @param string $data
      * @param int $type
      * @param boolean $masked
-     * @return Frame
+     * @return Wrench_Frame_Frame
      */
-    abstract public function encode($data, $type = Protocol::TYPE_TEXT, $masked = false);
+    abstract public function encode($data, $type = Wrench_Protocol_Protocol::TYPE_TEXT, $masked = false);
 
     /**
      * Whether the frame is the final one in a continuation
@@ -101,7 +97,7 @@ abstract class Frame
 
         try {
             return $this->getBufferLength() >= $this->getExpectedBufferLength();
-        } catch (FrameException $e) {
+        } catch (Wrench_Exception_FrameException $e) {
             return false;
         }
     }
@@ -124,7 +120,7 @@ abstract class Frame
     {
         try {
             return $this->getExpectedBufferLength() - $this->getBufferLength();
-        } catch (FrameException $e) {
+        } catch (Wrench_Exception_FrameException $e) {
             return null;
         }
     }
@@ -145,12 +141,12 @@ abstract class Frame
      * The frame must be complete to call this method.
      *
      * @return string
-     * @throws FrameException
+     * @throws Wrench_Exception_FrameException
      */
     public function getFramePayload()
     {
         if (!$this->isComplete()) {
-            throw new FrameException('Cannot get payload: frame is not complete');
+            throw new Wrench_Exception_FrameException('Cannot get payload: frame is not complete');
         }
 
         if (!$this->payload && $this->buffer) {
@@ -165,13 +161,13 @@ abstract class Frame
      *
      * This is the encoded value, receieved into the frame with receiveData().
      *
-     * @throws FrameException
+     * @throws Wrench_Exception_FrameException
      * @return string binary
      */
     public function getFrameBuffer()
     {
         if (!$this->buffer && $this->payload) {
-            throw new FrameException('Cannot get frame buffer');
+            throw new Wrench_Exception_FrameException('Cannot get frame buffer');
         }
         return $this->buffer;
     }

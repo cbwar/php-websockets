@@ -1,20 +1,17 @@
 <?php
 
-namespace Wrench\Tests\Listener;
-
-use Wrench\Tests\Test;
 
 /**
  * Payload test
  */
-abstract class ListenerTest extends Test
+abstract class Wrench_Tests_Listener_ListenerTest extends Wrench_Tests_Test
 {
     /**
      * @depends testConstructor
      */
     public function testListen($instance)
     {
-        $server = $this->getMock('Wrench\Server', array(), array(), '', false);
+        $server = $this->getMock('Wrench_Server', array(), array(), '', false);
 
         $instance->listen($server);
     }

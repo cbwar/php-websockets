@@ -1,11 +1,6 @@
 <?php
 
-namespace Wrench\Exception;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Exception\HandshakeException;
-
-class BadRequestException extends HandshakeException
+class Wrench_Exception_BadRequestException extends Wrench_Exception_HandshakeException
 {
     /**
      * @param string    $message
@@ -15,7 +10,7 @@ class BadRequestException extends HandshakeException
     public function __construct($message = null, $code = null, $previous = null)
     {
         if ($code == null) {
-            $code = Protocol::HTTP_BAD_REQUEST;
+            $code = Wrench_Protocol_Protocol::HTTP_BAD_REQUEST;
         }
         parent::__construct($message, $code, $previous);
     }

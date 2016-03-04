@@ -1,24 +1,17 @@
 <?php
 
-namespace Wrench\Tests;
-
-use Wrench\Server;
-use Wrench\Tests\Test;
-
-use \InvalidArgumentException;
-use \PHPUnit_Framework_Error;
 
 /**
  * Tests the Server class
  */
-class ServerTest extends Test
+class Wrench_Tests_ServerTest extends Wrench_Tests_Test
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     protected function getClass()
     {
-        return 'Wrench\Server';
+        return 'Wrench_Server';
     }
 
     /**

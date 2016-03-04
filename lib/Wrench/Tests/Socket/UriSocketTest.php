@@ -1,10 +1,6 @@
 <?php
 
-namespace Wrench\Tests\Socket;
-
-use \Exception;
-
-abstract class UriSocketTest extends SocketTest
+abstract class Wrench_Tests_Socket_UriSocketTest extends Wrench_Tests_Socket_SocketTest
 {
     /**
      * By default, the socket has not required arguments

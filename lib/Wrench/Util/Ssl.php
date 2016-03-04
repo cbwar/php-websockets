@@ -1,8 +1,6 @@
 <?php
 
-namespace Wrench\Util;
-
-class Ssl
+class Wrench_Util_Ssl
 {
 	/**
 	 * Generates a new PEM File given the informations

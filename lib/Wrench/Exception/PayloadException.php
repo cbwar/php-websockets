@@ -1,8 +1,5 @@
 <?php
-namespace Wrench\Exception;
 
-use Wrench\Exception\Exception as WrenchException;
-
-class PayloadException extends WrenchException
+class Wrench_Exception_PayloadException extends Wrench_Exception_Exception
 {
 }

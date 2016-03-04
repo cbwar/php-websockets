@@ -1,14 +1,10 @@
 <?php
 
-namespace Wrench\Tests\Frame;
 
-use Wrench\Frame\HybiFrame;
-use Wrench\Tests\Frame\FrameTest;
-
-class HybiFrameTest extends FrameTest
+class Wrench_Tests_Frame_HybiFrameTest extends Wrench_Tests_Frame_FrameTest
 {
     protected function getClass()
     {
-        return 'Wrench\Frame\HybiFrame';
+        return 'Wrench_Frame_HybiFrame';
     }
 }

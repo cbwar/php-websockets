@@ -1,13 +1,10 @@
 <?php
-namespace Wrench\Socket;
-
-use Wrench\Socket\UriSocket;
 
 /**
  * Options:
  *  - timeout_connect      => int, seconds, default 2
  */
-class ClientSocket extends UriSocket
+class Wrench_Socket_ClientSocket extends Wrench_Socket_UriSocket
 {
     /**
      * Default connection timeout
@@ -17,7 +14,7 @@ class ClientSocket extends UriSocket
     const TIMEOUT_CONNECT = 2;
 
     /**
-     * @see Wrench\Socket.Socket::configure()
+     * @see Wrench_Socket_Socket::configure()
      *   Options include:
      *     - ssl_verify_peer       => boolean, whether to perform peer verification
      *                                 of SSL certificate used
@@ -59,7 +56,7 @@ class ClientSocket extends UriSocket
         );
 
         if (!$this->socket) {
-            throw new \Wrench\Exception\ConnectionException(sprintf(
+            throw new Wrench_Exception_ConnectionException(sprintf(
                 'Could not connect to socket: %s (%d)',
                 $errstr,
                 $errno
@@ -78,7 +75,7 @@ class ClientSocket extends UriSocket
     }
 
     /**
-     * @see Wrench\Socket.UriSocket::getSocketStreamContextOptions()
+     * @see Wrench_Socket_UriSocket::getSocketStreamContextOptions()
      */
     protected function getSocketStreamContextOptions()
     {
@@ -87,7 +84,7 @@ class ClientSocket extends UriSocket
     }
 
     /**
-     * @see Wrench\Socket.UriSocket::getSslStreamContextOptions()
+     * @see .Wrench_Socket_UriSocket::getSslStreamContextOptions()
      */
     protected function getSslStreamContextOptions()
     {

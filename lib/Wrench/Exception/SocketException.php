@@ -1,8 +1,6 @@
 <?php
-namespace Wrench\Exception;
 
-use Wrench\Exception\Exception as WrenchException;
 
-class SocketException extends WrenchException
+class Wrench_Exception_SocketException extends Wrench_Exception_Exception
 {
 }

@@ -1,23 +1,19 @@
 <?php
 
-namespace Wrench\Socket;
 
-use Wrench\Protocol\Protocol;
-use Wrench\Socket\Socket;
-
-abstract class UriSocket extends Socket
+abstract class Wrench_Socket_UriSocket extends Wrench_Socket_Socket
 {
     protected $scheme;
     protected $host;
     protected $port;
 
     /**
-     * URI Socket constructor
+     * URI Wrench_Socket_Socket constructor
      *
      * @param string $uri     WebSocket URI, e.g. ws://example.org:8000/chat
      * @param array  $options (optional)
      *   Options:
-     *     - protocol             => Wrench\Protocol object, latest protocol
+     *     - protocol             => Wrench_Protocol_Protocol object, latest protocol
      *                                 version used if not specified
      *     - timeout_socket       => int, seconds, default 5
      *     - server_ssl_cert_file => string, server SSL certificate
@@ -52,7 +48,7 @@ abstract class UriSocket extends Socket
 
     /**
      * @todo DNS lookup? Override getIp()?
-     * @see Wrench\Socket.Socket::getName()
+     * @see Wrench_Socket_Socket::getName()
      */
     protected function getName()
     {
@@ -68,7 +64,7 @@ abstract class UriSocket extends Socket
     }
 
     /**
-     * @see Wrench\Socket.Socket::getPort()
+     * @see Wrench_Socket_Socket::getPort()
      */
     public function getPort()
     {
@@ -82,18 +78,18 @@ abstract class UriSocket extends Socket
     {
         $options = array();
 
-        if ($this->scheme == Protocol::SCHEME_UNDERLYING_SECURE
-            || $this->scheme == Protocol::SCHEME_UNDERLYING) {
+        if ($this->scheme == Wrench_Protocol_Protocol::SCHEME_UNDERLYING_SECURE
+            || $this->scheme == Wrench_Protocol_Protocol::SCHEME_UNDERLYING) {
             $options['socket'] = $this->getSocketStreamContextOptions();
         }
 
-        if ($this->scheme == Protocol::SCHEME_UNDERLYING_SECURE) {
+        if ($this->scheme == Wrench_Protocol_Protocol::SCHEME_UNDERLYING_SECURE) {
             $options['ssl'] = $this->getSslStreamContextOptions();
         }
 
         return stream_context_create(
-            $options,
-            array()
+            $options
+			//PHP 5.2 ,array()
         );
     }
 

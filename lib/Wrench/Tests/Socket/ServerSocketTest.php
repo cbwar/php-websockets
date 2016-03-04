@@ -1,13 +1,10 @@
 <?php
 
-namespace Wrench\Tests\Socket;
 
-use \Exception;
-
-class ServerSocketTest extends UriSocketTest
+class Wrench_Tests_Socket_ServerSocketTest extends Wrench_Tests_Socket_UriSocketTest
 {
     public function getClass()
     {
-        return 'Wrench\Socket\ServerSocket';
+        return 'Wrench_Socket_ServerSocket';
     }
 }

@@ -1,19 +1,15 @@
 <?php
 
-namespace Wrench\Listener;
-
-use Wrench\Connection;
-
-interface HandshakeRequestListener
+interface Wrench_Listener_HandshakeRequestListener
 {
     /**
      * Handshake request listener
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      * @param string $path
      * @param string $origin
      * @param string $key
      * @param array $extensions
      */
-    public function onHandshakeRequest(Connection $connection, $path, $origin, $key, $extensions);
+    public function onHandshakeRequest(Wrench_Connection $connection, $path, $origin, $key, $extensions);
 }

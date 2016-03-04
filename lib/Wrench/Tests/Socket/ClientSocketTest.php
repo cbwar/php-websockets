@@ -1,21 +1,14 @@
 <?php
 
-namespace Wrench\Tests\Socket;
 
-use Wrench\Protocol\Rfc6455Protocol;
-use Wrench\Socket\ClientSocket;
-use Wrench\Tests\ServerTestHelper;
-use \Exception;
-use \stdClass;
-
-class ClientSocketTest extends UriSocketTest
+class Wrench_Tests_Socket_ClientSocketTest extends Wrench_Tests_Socket_UriSocketTest
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     public function getClass()
     {
-        return 'Wrench\Socket\ClientSocket';
+        return 'Wrench_Socket_ClientSocket';
     }
 
     /**
@@ -30,22 +23,22 @@ class ClientSocketTest extends UriSocketTest
         $socket = null;
 
         $this->assertInstanceOfClass(
-            new ClientSocket('ws://localhost/'),
+            new Wrench_Socket_ClientSocket('ws://localhost/'),
             'ws:// scheme, default port'
         );
 
         $this->assertInstanceOfClass(
-            new ClientSocket('ws://localhost/some-arbitrary-path'),
+            new Wrench_Socket_ClientSocket('ws://localhost/some-arbitrary-path'),
             'with path'
         );
 
         $this->assertInstanceOfClass(
-            new ClientSocket('wss://localhost/test', array()),
+            new Wrench_Socket_ClientSocket('wss://localhost/test', array()),
             'empty options'
         );
 
         $this->assertInstanceOfClass(
-            new ClientSocket('ws://localhost:8000/foo'),
+            new Wrench_Socket_ClientSocket('ws://localhost:8000/foo'),
             'specified port'
         );
 
@@ -57,7 +50,7 @@ class ClientSocketTest extends UriSocketTest
         $socket = null;
 
         $this->assertInstanceOfClass(
-            $socket = new ClientSocket(
+            $socket = new Wrench_Socket_ClientSocket(
                 'ws://localhost:8000/foo', array(
                     'timeout_connect' => 10
                 )
@@ -66,7 +59,7 @@ class ClientSocketTest extends UriSocketTest
         );
 
         $this->assertInstanceOfClass(
-            $socket = new ClientSocket(
+            $socket = new Wrench_Socket_ClientSocket(
                 'ws://localhost:8000/foo', array(
                     'timeout_socket' => 10
                 )
@@ -75,9 +68,9 @@ class ClientSocketTest extends UriSocketTest
         );
 
         $this->assertInstanceOfClass(
-            $socket = new ClientSocket(
+            $socket = new Wrench_Socket_ClientSocket(
                 'ws://localhost:8000/foo', array(
-                    'protocol' => new Rfc6455Protocol()
+                    'protocol' => new Wrench_Protocol_Rfc6455Protocol()
                 )
             ),
             'protocol'
@@ -89,7 +82,7 @@ class ClientSocketTest extends UriSocketTest
      */
     public function testProtocolTypeError()
     {
-        $socket = new ClientSocket(
+        $socket = new Wrench_Socket_ClientSocket(
             'ws://localhost:8000/foo', array(
                 'protocol' => new stdClass()
             )
@@ -101,7 +94,7 @@ class ClientSocketTest extends UriSocketTest
      */
     public function testConstructorUriUnspecified()
     {
-        $w = new ClientSocket();
+        $w = new Wrench_Socket_ClientSocket();
     }
 
     /**
@@ -109,7 +102,7 @@ class ClientSocketTest extends UriSocketTest
      */
     public function testConstructorUriEmpty()
     {
-        $w = new ClientSocket(null);
+        $w = new Wrench_Socket_ClientSocket(null);
     }
 
 
@@ -118,13 +111,13 @@ class ClientSocketTest extends UriSocketTest
      */
     public function testConstructorUriInvalid()
     {
-        $w = new ClientSocket('Bad argument');
+        $w = new Wrench_Socket_ClientSocket('Bad argument');
     }
 
 
     /**
      * @depends testConstructor
-     * @expectedException Wrench\Exception\SocketException
+     * @expectedException Wrench_Exception_SocketException
      */
     public function testSendTooEarly($instance)
     {
@@ -132,12 +125,12 @@ class ClientSocketTest extends UriSocketTest
     }
 
     /**
-     * Test the connect, send, receive method
+     * Wrench_Tests_Test the connect, send, receive method
      */
     public function testConnect()
     {
         try {
-            $helper = new ServerTestHelper();
+            $helper = new Wrench_Tests_ServerTestHelper();
             $helper->setUp();
 
             $instance = $this->getInstance($helper->getConnectionString());
@@ -157,7 +150,7 @@ Sec-WebSocket-Version: 13\r\n\r\n");
             $response = $instance->receive();
             $this->assertStringStartsWith('HTTP', $response, 'Response looks like HTTP handshake response');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $helper->tearDown();
             throw $e;
         }

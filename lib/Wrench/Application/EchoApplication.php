@@ -1,17 +1,12 @@
 <?php
 
-namespace Wrench\Application;
-
-use Wrench\Application\Application;
-use Wrench\Application\NamedApplication;
-
 /**
  * Example application for Wrench: echo server
  */
-class EchoApplication extends Application
+class Wrench_Application_EchoApplication extends Wrench_Application_Application
 {
     /**
-     * @see Wrench\Application.Application::onData()
+     * @see Wrench_Application_Application::onData()
      */
     public function onData($data, $client)
     {

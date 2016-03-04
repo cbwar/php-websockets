@@ -1,15 +1,9 @@
 <?php
 
-namespace Wrench\Payload;
-
-use Wrench\Exception\PayloadException;
-use Wrench\Util\Configurable;
-use \InvalidArgumentException;
-
 /**
  * Handles chunking and splitting of payloads into frames
  */
-class PayloadHandler extends Configurable
+class Wrench_Payload_PayloadHandler extends Wrench_Util_Configurable
 {
     /**
      * A callback that will be called when a complete payload is available
@@ -33,7 +27,7 @@ class PayloadHandler extends Configurable
         parent::__construct($options);
 
         if (!is_callable($callback)) {
-            throw new InvalidArgumentException('You must supply a callback to PayloadHandler');
+            throw new InvalidArgumentException('You must supply a callback to Wrench_Payload_PayloadHandler');
         }
 
         $this->callback = $callback;
@@ -82,7 +76,7 @@ class PayloadHandler extends Configurable
                 $this->emit($this->payload);
                 $this->payload = $this->protocol->getPayload();
             } else {
-                throw new PayloadException('Payload will not complete');
+                throw new Wrench_Exception_PayloadException('Wrench_Payload_Payload will not complete');
             }
         }
     }
@@ -102,7 +96,7 @@ class PayloadHandler extends Configurable
      *
      * @param Payload $payload
      */
-    protected function emit(Payload $payload)
+    protected function emit(Wrench_Payload_Payload $payload)
     {
         call_user_func($this->callback, $payload);
     }

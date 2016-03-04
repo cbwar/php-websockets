@@ -1,10 +1,7 @@
 <?php
 
-namespace Wrench\Tests;
 
-use Wrench\Util\Ssl;
-
-class SslTest extends Test
+class Wrench_Tests_Util_SslTest extends Wrench_Tests_Test
 {
     /**
      * Gets the class under test
@@ -13,7 +10,7 @@ class SslTest extends Test
      */
     protected function getClass()
     {
-        return 'Wrench\\Util\\Ssl';
+        return 'Wrench_Util_Ssl';
     }
 
     public function setUp()
@@ -34,7 +31,7 @@ class SslTest extends Test
 
     public function testGeneratePemWithPassphrase()
     {
-        Ssl::generatePemFile(
+        Wrench_Util_Ssl::generatePemFile(
             $this->tmp,
             'password',
             'nz',
@@ -57,7 +54,7 @@ class SslTest extends Test
 
     public function testGeneratePemWithoutPassphrase()
     {
-        Ssl::generatePemFile(
+        Wrench_Util_Ssl::generatePemFile(
             $this->tmp,
             null,
             'de',

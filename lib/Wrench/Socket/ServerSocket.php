@@ -1,18 +1,12 @@
 <?php
 
-namespace Wrench\Socket;
-
-use Wrench\Exception\ConnectionException;
-
-use Wrench\Socket\UriSocket;
-
 /**
- * Server socket
+ * Wrench_Server socket
  *
  * Used for a server's "master" socket that binds to the configured
  * interface and listens
  */
-class ServerSocket extends UriSocket
+class Wrench_Socket_ServerSocket extends Wrench_Socket_UriSocket
 {
     const TIMEOUT_ACCEPT = 5;
 
@@ -24,7 +18,7 @@ class ServerSocket extends UriSocket
     protected $listening = false;
 
     /**
-     * @see Wrench\Socket.Socket::configure()
+     * @see Wrench_Socket_Socket::configure()
      *   Options include:
      *     - backlog               => int, used to limit the number of outstanding
      *                                 connections in the socket's listen queue
@@ -50,7 +44,7 @@ class ServerSocket extends UriSocket
     /**
      * Listens
      *
-     * @throws ConnectionException
+     * @throws Wrench_Exception_ConnectionException
      */
     public function listen()
     {
@@ -63,7 +57,7 @@ class ServerSocket extends UriSocket
         );
 
         if (!$this->socket) {
-            throw new ConnectionException(sprintf(
+            throw new Wrench_Exception_ConnectionException(sprintf(
                 'Could not listen on socket: %s (%d)',
                 $errstr,
                 $errno
@@ -76,7 +70,7 @@ class ServerSocket extends UriSocket
     /**
      * Accepts a new connection on the socket
      *
-     * @throws ConnectionException
+     * @throws Wrench_Exception_ConnectionException
      * @return resource
      */
     public function accept()
@@ -87,14 +81,14 @@ class ServerSocket extends UriSocket
         );
 
         if (!$new) {
-            throw new ConnectionException(socket_strerror(socket_last_error($new)));
+            throw new Wrench_Exception_ConnectionException(socket_strerror(socket_last_error($new)));
         }
 
         return $new;
     }
 
     /**
-     * @see Wrench\Socket.UriSocket::getSocketStreamContextOptions()
+     * @see Wrench_Socket_UriSocket::getSocketStreamContextOptions()
      */
     protected function getSocketStreamContextOptions()
     {
@@ -108,7 +102,7 @@ class ServerSocket extends UriSocket
     }
 
     /**
-     * @see Wrench\Socket.UriSocket::getSslStreamContextOptions()
+     * @see Wrench_Socket_UriSocket::getSslStreamContextOptions()
      */
     protected function getSslStreamContextOptions()
     {

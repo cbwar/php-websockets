@@ -1,7 +1,6 @@
 <?php
 
-namespace Wrench\Exception;
 
-class ConnectionException extends Exception
+class Wrench_Exception_ConnectionException extends Wrench_Exception_Exception
 {
 }

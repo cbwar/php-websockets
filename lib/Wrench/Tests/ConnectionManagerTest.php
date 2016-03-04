@@ -1,26 +1,17 @@
 <?php
 
-namespace Wrench\Tests;
-
-use Wrench\ConnectionManager;
-use Wrench\Tests\Test;
-
-use Wrench\Application\EchoApplication;
-
-use \InvalidArgumentException;
-use \PHPUnit_Framework_Error;
 
 /**
  * Tests the ConnectionManager class
  */
-class ConnectionManagerTest extends Test
+class Wrench_Tests_ConnectionManagerTest extends Wrench_Tests_Test
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     protected function getClass()
     {
-        return 'Wrench\ConnectionManager';
+        return 'Wrench_ConnectionManager';
     }
 
     /**
@@ -56,7 +47,7 @@ class ConnectionManagerTest extends Test
 
     /**
      * @depends testConstructor
-     * @param ConnectionManager $instance
+     * @param Wrench_ConnectionManager $instance
      */
     public function testCount($instance)
     {
@@ -78,7 +69,7 @@ class ConnectionManagerTest extends Test
      */
     protected function getMockServer()
     {
-        $server = $this->getMock('Wrench\Server', array(), array(), '', false);
+        $server = $this->getMock('Wrench_Server', array(), array(), '', false);
 
         $server->registerApplication('/echo', $this->getMockApplication());
 
@@ -92,10 +83,10 @@ class ConnectionManagerTest extends Test
     /**
      * Gets a mock application
      *
-     * @return EchoApplication
+     * @return Wrench_Application_EchoApplication
      */
     protected function getMockApplication()
     {
-        return new EchoApplication();
+        return new Wrench_Application_EchoApplication();
     }
 }

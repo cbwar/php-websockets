@@ -1,11 +1,9 @@
 <?php
 
-namespace Wrench;
-
 /**
- * Resource interface
+ * Wrench_Resource interface
  */
-interface Resource
+interface Wrench_Resource
 {
     public function getResourceId();
     public function getResource();

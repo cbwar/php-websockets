@@ -1,21 +1,15 @@
 <?php
 
-namespace Wrench\Tests\Frame;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Frame\Frame;
-use Wrench\Tests\Test;
-use \Exception;
 
 /**
  * Frame test
  */
-abstract class FrameTest extends Test
+abstract class Wrench_Tests_Frame_FrameTest extends Wrench_Tests_Test
 {
     /**
      * A fresh instance of the class being tested
      *
-     * @var Frame
+     * @var Wrench_Frame_Frame
      */
     protected $frame;
 
@@ -120,7 +114,7 @@ abstract class FrameTest extends Test
     public function testEncodeTypeReflection($type, $payload, $masked)
     {
         $this->frame->encode($payload, $type);
-        $this->assertEquals(Protocol::TYPE_TEXT, $this->frame->getType(), 'Encode retains type information');
+        $this->assertEquals(Wrench_Protocol_Protocol::TYPE_TEXT, $this->frame->getType(), 'Encode retains type information');
     }
 
     /**
@@ -152,17 +146,17 @@ abstract class FrameTest extends Test
     {
         return array(
             array(
-                Protocol::TYPE_TEXT,
+                Wrench_Protocol_Protocol::TYPE_TEXT,
                 "123456\x007890!@#$%^&*()qwe\trtyuiopQWERTYUIOPasdfghjklASFGH\n
                 JKLzxcvbnmZXCVBNM,./<>?;[]{}-=_+\|'asdad0x11\aasdassasdasasdsd",
                 true
             ),
             array(
-                Protocol::TYPE_TEXT,
+                Wrench_Protocol_Protocol::TYPE_TEXT,
                 pack('CCCCCCC', 0x00, 0x01, 0x02, 0x03, 0x04, 0xff, 0xf0),
                 true
             ),
-            array(Protocol::TYPE_TEXT, ' ', true)
+            array(Wrench_Protocol_Protocol::TYPE_TEXT, ' ', true)
         );
     }
 }

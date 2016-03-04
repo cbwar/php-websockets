@@ -1,18 +1,14 @@
 <?php
 
-namespace Wrench\Protocol;
-
-use Wrench\Protocol\HybiProtocol;
-
 /**
  * http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-10
  */
-class Hybi10Protocol extends HybiProtocol
+class Wrench_Protocol_Hybi10Protocol extends Wrench_Protocol_HybiProtocol
 {
     const VERSION = 10;
 
     /**
-     * @see Wrench\Protocol.Protocol::getVersion()
+     * @see Wrench_Protocol_Protocol::getVersion()
      */
     public function getVersion()
     {
@@ -22,7 +18,7 @@ class Hybi10Protocol extends HybiProtocol
     /**
      * This is our most recent protocol class
      *
-     * @see Wrench\Protocol.Protocol::acceptsVersion()
+     * @see Wrench_Protocol_Protocol::acceptsVersion()
      */
     public function acceptsVersion($version)
     {

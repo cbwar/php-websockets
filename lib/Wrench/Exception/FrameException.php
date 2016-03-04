@@ -1,8 +1,5 @@
 <?php
-namespace Wrench\Exception;
 
-use Wrench\Exception\Exception as WrenchException;
-
-class FrameException extends WrenchException
+class Wrench_Exception_FrameException extends Wrench_Exception_Exception
 {
 }

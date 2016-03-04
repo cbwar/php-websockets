@@ -1,18 +1,14 @@
 <?php
 
-namespace Wrench\Tests\Application;
 
-use Wrench\Protocol\Protocol;
-use Wrench\Tests\Test as WrenchTest;
-
-class EchoApplicationTest extends WrenchTest
+class Wrench_Tests_Application_EchoApplicationTest extends Wrench_Tests_Test
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     protected function getClass()
     {
-        return 'Wrench\Application\EchoApplication';
+        return 'Wrench_Application_EchoApplication';
     }
 
     /**
@@ -29,14 +25,14 @@ class EchoApplicationTest extends WrenchTest
      */
     public function testOnData($payload)
     {
-        $connection = $this->getMockBuilder('Wrench\Connection')
+        $connection = $this->getMockBuilder('Wrench_Connection')
                      ->disableOriginalConstructor()
                      ->getMock();
 
         $connection
             ->expects($this->once())
             ->method('send')
-            ->with($this->equalTo($payload), $this->equalTo(Protocol::TYPE_TEXT))
+            ->with($this->equalTo($payload), $this->equalTo(Wrench_Protocol_Protocol::TYPE_TEXT))
             ->will($this->returnValue(true));
 
         $this->getInstance()->onData($payload, $connection);

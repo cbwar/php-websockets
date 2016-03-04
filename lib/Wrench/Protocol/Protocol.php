@@ -1,20 +1,12 @@
 <?php
 
-namespace Wrench\Protocol;
-
-use Wrench\Payload\Payload;
-use Wrench\Exception\BadRequestException;
-use Wrench\Exception\HandshakeException;
-
-use \Exception;
-use \InvalidArgumentException;
 
 /**
  * Definitions and implementation helpers for the Wrenchs protocol
  *
  * Based on RFC 6455: http://tools.ietf.org/html/rfc6455
  */
-abstract class Protocol
+abstract class Wrench_Protocol_Protocol
 {
     /**#@+
      * Relevant schemes
@@ -80,7 +72,7 @@ abstract class Protocol
     /**#@-*/
 
     /**#@+
-     * Frame types
+     * Wrench_Frame_Frame types
      *
      *  %x0 denotes a continuation frame
      *  %x1 denotes a text frame
@@ -127,7 +119,7 @@ abstract class Protocol
     const UPGRADE_VALUE = 'websocket';
 
     /**
-     * The request MUST contain a |Connection| header field whose value
+     * The request MUST contain a |Wrench_Connection| header field whose value
      *   MUST include the "Upgrade" token.
      */
     const CONNECTION_VALUE = 'Upgrade';
@@ -196,7 +188,7 @@ abstract class Protocol
     );
 
     /**
-     * Frame types
+     * Wrench_Frame_Frame types
      *
      * @todo flip values and keys?
      * @var array<string => int>
@@ -245,7 +237,7 @@ abstract class Protocol
      * Gets a payload instance, suitable for use in decoding/encoding protocol
      * frames
      *
-     * @return Payload
+     * @return Wrench_Payload_Payload
      */
     abstract public function getPayload();
 
@@ -341,7 +333,7 @@ abstract class Protocol
     /**
      * Gets a response to an error in the handshake
      *
-     * @param int|Exception $e Exception or HTTP error
+     * @param int|Exception $e Wrench_Exception_Exception or HTTP error
      * @param array $headers
      * @return string
      */
@@ -404,13 +396,13 @@ abstract class Protocol
         $headers = $this->getHeaders($response);
 
         if (!isset($headers[self::HEADER_ACCEPT])) {
-            throw new HandshakeException('No accept header receieved on handshake response');
+            throw new Wrench_Exception_HandshakeException('No accept header receieved on handshake response');
         }
 
         $accept = $headers[self::HEADER_ACCEPT];
 
         if (!$accept) {
-            throw new HandshakeException('Invalid accept header');
+            throw new Wrench_Exception_HandshakeException('Invalid accept header');
         }
 
         $expected = $this->getAcceptValue($key);
@@ -436,7 +428,7 @@ abstract class Protocol
      * Validates a request handshake
      *
      * @param string $request
-     * @throws BadRequestException
+     * @throws Wrench_Exception_BadRequestException
      */
     public function validateRequestHandshake(
         $request
@@ -458,7 +450,7 @@ abstract class Protocol
         }
 
         if (empty($headers[self::HEADER_ORIGIN])) {
-            throw new BadRequestException('No origin header');
+            throw new Wrench_Exception_BadRequestException('No origin header');
         } else {
             unset($extraHeaders[self::HEADER_ORIGIN]);
         }
@@ -468,7 +460,7 @@ abstract class Protocol
         if (!isset($headers[self::HEADER_UPGRADE])
                 || strtolower($headers[self::HEADER_UPGRADE]) != self::UPGRADE_VALUE
         ) {
-            throw new BadRequestException('Invalid upgrade header');
+            throw new Wrench_Exception_BadRequestException('Invalid upgrade header');
         } else {
             unset($extraHeaders[self::HEADER_UPGRADE]);
         }
@@ -476,7 +468,7 @@ abstract class Protocol
         if (!isset($headers[self::HEADER_CONNECTION])
                 || stripos($headers[self::HEADER_CONNECTION], self::CONNECTION_VALUE) === false
         ) {
-            throw new BadRequestException('Invalid connection header');
+            throw new Wrench_Exception_BadRequestException('Invalid connection header');
         } else {
             unset($extraHeaders[self::HEADER_CONNECTION]);
         }
@@ -484,29 +476,29 @@ abstract class Protocol
         if (!isset($headers[self::HEADER_HOST])) {
             // @todo Validate host == listening socket? Or would that break
             //        TCP proxies?
-            throw new BadRequestException('No host header');
+            throw new Wrench_Exception_BadRequestException('No host header');
         } else {
             unset($extraHeaders[self::HEADER_HOST]);
         }
 
         if (!isset($headers[self::HEADER_VERSION])) {
-            throw new BadRequestException('No version header received on handshake request');
+            throw new Wrench_Exception_BadRequestException('No version header received on handshake request');
         }
 
         if (!$this->acceptsVersion($headers[self::HEADER_VERSION])) {
-            throw new BadRequestException('Unsupported version: ' . $headers[self::HEADER_VERSION]);
+            throw new Wrench_Exception_BadRequestException('Unsupported version: ' . $headers[self::HEADER_VERSION]);
         } else {
             unset($extraHeaders[self::HEADER_VERSION]);
         }
 
         if (!isset($headers[self::HEADER_KEY])) {
-            throw new BadRequestException('No key header received');
+            throw new Wrench_Exception_BadRequestException('No key header received');
         }
 
         $key = trim($headers[self::HEADER_KEY]);
 
         if (!$key) {
-            throw new BadRequestException('Invalid key');
+            throw new Wrench_Exception_BadRequestException('Invalid key');
         } else {
             unset($extraHeaders[self::HEADER_KEY]);
         }
@@ -534,7 +526,7 @@ abstract class Protocol
      * Gets a suitable WebSocket close frame
      *
      * @param Exception|int $e
-     * @return Payload
+     * @return Wrench_Payload_Payload
      */
     public function getClosePayload($e)
     {
@@ -653,14 +645,14 @@ abstract class Protocol
      * Validates a request line
      *
      * @param string $line
-     * @throws BadRequestException
+     * @throws Wrench_Exception_BadRequestException
      */
     protected function validateRequestLine($line)
     {
         $matches = array(0 => null, 1 => null);
 
         if (!preg_match(self::REQUEST_LINE_REGEX, $line, $matches) || !$matches[1]) {
-            throw new BadRequestException('Invalid request line', 400);
+            throw new Wrench_Exception_BadRequestException('Invalid request line', 400);
         }
 
         return $matches[1];
@@ -802,7 +794,7 @@ abstract class Protocol
     /**
      * Gets the default port for a scheme
      *
-     * By default, the WebSocket Protocol uses port 80 for regular WebSocket
+     * By default, the WebSocket Wrench_Protocol_Protocol uses port 80 for regular WebSocket
      *  connections and port 443 for WebSocket connections tunneled over
      *  Transport Layer Security
      *

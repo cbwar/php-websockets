@@ -1,12 +1,7 @@
 <?php
 
-namespace Wrench\Frame;
 
-use Wrench\Protocol\Protocol;
-use Wrench\Exception\FrameException;
-use \InvalidArgumentException;
-
-class HybiFrame extends Frame
+class Wrench_Frame_HybiFrame extends Wrench_Frame_Frame
 {
     // First byte
     const BITFIELD_FINAL = 0x80;
@@ -47,7 +42,7 @@ class HybiFrame extends Frame
     protected $offset_mask = null;
 
     /**
-     * @see Wrench\Frame.Frame::encode()
+     * @see Wrench_Frame_Frame::encode()
      *     ws-frame         = frame-fin           ; 1 bit in length
      *                        frame-rsv1          ; 1 bit in length
      *                        frame-rsv2          ; 1 bit in length
@@ -62,9 +57,9 @@ class HybiFrame extends Frame
      *                                               ; length, where
      *                                               ; n >= 0
      */
-    public function encode($payload, $type = Protocol::TYPE_TEXT, $masked = false)
+    public function encode($payload, $type = Wrench_Protocol_Protocol::TYPE_TEXT, $masked = false)
     {
-        if (!is_int($type) || !in_array($type, Protocol::$frameTypes)) {
+        if (!is_int($type) || !in_array($type, Wrench_Protocol_Protocol::$frameTypes)) {
             throw new InvalidArgumentException('Invalid frame type');
         }
 
@@ -162,14 +157,14 @@ class HybiFrame extends Frame
     /**
      * Gets the mask
      *
-     * @throws FrameException
+     * @throws Wrench_Exception_FrameException
      * @return string
      */
     protected function getMask()
     {
         if (!isset($this->mask)) {
             if (!$this->isMasked()) {
-                throw new FrameException('Cannot get mask: frame is not masked');
+                throw new Wrench_Exception_FrameException('Cannot get mask: frame is not masked');
             }
             $this->mask = substr($this->buffer, $this->getMaskOffset(), $this->getMaskSize());
         }
@@ -201,7 +196,7 @@ class HybiFrame extends Frame
     {
         if (!isset($this->masked)) {
             if (!isset($this->buffer[1])) {
-                throw new FrameException('Cannot tell if frame is masked: not enough frame data received');
+                throw new Wrench_Exception_FrameException('Cannot tell if frame is masked: not enough frame data received');
             }
             $this->masked = (boolean)(ord($this->buffer[1]) & self::BITFIELD_MASKED);
         }
@@ -209,7 +204,7 @@ class HybiFrame extends Frame
     }
 
     /**
-     * @see Wrench\Frame.Frame::getExpectedDataLength()
+     * @see Wrench_Frame_Frame::getExpectedDataLength()
      */
     protected function getExpectedBufferLength()
     {
@@ -249,7 +244,7 @@ class HybiFrame extends Frame
     }
 
     /**
-     * @see Wrench\Frame.Frame::getLength()
+     * @see Wrench_Frame_Frame::getLength()
      */
     public function getLength()
     {
@@ -264,7 +259,7 @@ class HybiFrame extends Frame
                 $end = self::BYTE_INITIAL_LENGTH + $this->getLengthSize();
 
                 if ($end >= $this->getBufferLength()) {
-                    throw new FrameException('Cannot get extended length: need more data');
+                    throw new Wrench_Exception_FrameException('Cannot get extended length: need more data');
                 }
 
                 $length = 0;
@@ -290,7 +285,7 @@ class HybiFrame extends Frame
     protected function getInitialLength()
     {
         if (!isset($this->buffer[self::BYTE_INITIAL_LENGTH])) {
-            throw new FrameException('Cannot yet tell expected length');
+            throw new Wrench_Exception_FrameException('Cannot yet tell expected length');
         }
         $a = (int)(ord($this->buffer[self::BYTE_INITIAL_LENGTH]) & self::BITFIELD_INITIAL_LENGTH);
 
@@ -331,7 +326,7 @@ class HybiFrame extends Frame
     }
 
     /**
-     * @see Wrench\Frame.Frame::decodeFramePayloadFromBuffer()
+     * @see Wrench_Frame_Frame::decodeFramePayloadFromBuffer()
      */
     protected function decodeFramePayloadFromBuffer()
     {
@@ -345,30 +340,30 @@ class HybiFrame extends Frame
     }
 
     /**
-     * @see Wrench\Frame.Frame::isFinal()
+     * @see Wrench_Frame_Frame::isFinal()
      */
     public function isFinal()
     {
         if (!isset($this->buffer[self::BYTE_HEADER])) {
-            throw new FrameException('Cannot yet tell if frame is final');
+            throw new Wrench_Exception_FrameException('Cannot yet tell if frame is final');
         }
         return (boolean)(ord($this->buffer[self::BYTE_HEADER]) & self::BITFIELD_FINAL);
     }
 
     /**
-     * @throws FrameException
-     * @see Wrench\Frame.Frame::getType()
+     * @throws Wrench_Exception_FrameException
+     * @see Wrench_Frame_Frame::getType()
      */
     public function getType()
     {
         if (!isset($this->buffer[self::BYTE_HEADER])) {
-            throw new FrameException('Cannot yet tell type of frame');
+            throw new Wrench_Exception_FrameException('Cannot yet tell type of frame');
         }
 
         $type = (int)(ord($this->buffer[self::BYTE_HEADER]) & self::BITFIELD_TYPE);
 
-        if (!in_array($type, Protocol::$frameTypes)) {
-            throw new FrameException('Invalid payload type');
+        if (!in_array($type, Wrench_Protocol_Protocol::$frameTypes)) {
+            throw new Wrench_Exception_FrameException('Invalid payload type');
         }
 
         return $type;

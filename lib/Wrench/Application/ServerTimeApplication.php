@@ -1,19 +1,17 @@
 <?php
 
-namespace Wrench\Application;
-
 /**
- * Example application demonstrating how to use Application::onUpdate
+ * Example application demonstrating how to use Wrench_Application_Application::onUpdate
  *
  * Pushes the server time to all clients every update tick.
  */
-class ServerTimeApplication extends Application
+class Wrench_Application_ServerTimeApplication extends Wrench_Application_Application
 {
     protected $clients = array();
     protected $lastTimestamp = null;
 
     /**
-     * @see Wrench\Application.Application::onConnect()
+     * @see Wrench_Application_Application::onConnect()
      */
     public function onConnect($client)
     {
@@ -21,7 +19,7 @@ class ServerTimeApplication extends Application
     }
 
     /**
-     * @see Wrench\Application.Application::onUpdate()
+     * @see Wrench_Application_Application::onUpdate()
      */
     public function onUpdate()
     {
@@ -38,8 +36,8 @@ class ServerTimeApplication extends Application
     /**
      * Handle data received from a client
      *
-     * @param Payload    $payload A payload object, that supports __toString()
-     * @param Connection $connection
+     * @param Wrench_Payload_Payload    $payload A payload object, that supports __toString()
+     * @param Wrench_Connection $connection
      */
     public function onData($payload, $connection)
     {

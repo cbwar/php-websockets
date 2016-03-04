@@ -1,16 +1,12 @@
 <?php
 
-namespace Wrench\Application;
-
-use Wrench\Connection;
-
 /**
- * Shiny WSS Status Application
+ * Shiny WSS Status Wrench_Application_Application
  * Provides live server infos/messages to client/browser.
  *
  * @author Simon Samtleben <web@lemmingzshadow.net>
  */
-class StatusApplication extends Application
+class Wrench_Application_StatusApplication extends Wrench_Application_Application
 {
     private $_clients           = array();
     private $_serverClients     = array();
@@ -18,7 +14,7 @@ class StatusApplication extends Application
     private $_serverClientCount = 0;
 
     /**
-     * @param Connection $client
+     * @param Wrench_Connection $client
      */
     public function onConnect($client)
     {
@@ -28,7 +24,7 @@ class StatusApplication extends Application
     }
 
     /**
-     * @param Connection $client
+     * @param Wrench_Connection $client
      */
     public function onDisconnect($client)
     {
@@ -112,7 +108,7 @@ class StatusApplication extends Application
     }
 
     /**
-     * @param Connection $client
+     * @param Wrench_Connection $client
      */
     private function _sendServerinfo($client)
     {

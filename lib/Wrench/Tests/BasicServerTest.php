@@ -1,25 +1,17 @@
 <?php
 
-namespace Wrench\Tests;
-
-use Wrench\Server;
-use Wrench\BasicServer;
-use Wrench\Tests\ServerTest;
-
-use \InvalidArgumentException;
-use \PHPUnit_Framework_Error;
 
 /**
  * Tests the BasicServer class
  */
-class BasicServerTest extends ServerTest
+class Wrench_Tests_BasicServerTest extends Wrench_Tests_ServerTest
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     protected function getClass()
     {
-        return 'Wrench\BasicServer';
+        return 'Wrench_BasicServer';
     }
 
     /**
@@ -34,7 +26,7 @@ class BasicServerTest extends ServerTest
             'logger' => array($this, 'log')
         ));
 
-        $connection = $this->getMockBuilder('Wrench\Connection')
+        $connection = $this->getMockBuilder('Wrench_Connection')
                         ->disableOriginalConstructor()
                         ->getMock();
 
@@ -44,7 +36,7 @@ class BasicServerTest extends ServerTest
             ->will($this->returnValue(true));
 
         $server->notify(
-            Server::EVENT_HANDSHAKE_REQUEST,
+            Wrench_Server::EVENT_HANDSHAKE_REQUEST,
             array($connection, '', $origin, '', array())
         );
     }
@@ -61,7 +53,7 @@ class BasicServerTest extends ServerTest
             'logger' => array($this, 'log')
         ));
 
-        $connection = $this->getMockBuilder('Wrench\Connection')
+        $connection = $this->getMockBuilder('Wrench_Connection')
                         ->disableOriginalConstructor()
                         ->getMock();
 
@@ -71,7 +63,7 @@ class BasicServerTest extends ServerTest
             ->will($this->returnValue(true));
 
         $server->notify(
-            Server::EVENT_HANDSHAKE_REQUEST,
+            Wrench_Server::EVENT_HANDSHAKE_REQUEST,
             array($connection, '', $origin, '', array())
         );
     }

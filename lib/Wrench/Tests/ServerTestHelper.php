@@ -1,12 +1,11 @@
 <?php
 
-namespace Wrench\Tests;
 
 /**
  * In conjunction with server.php, provides a listening server
  * against which tests can be run.
  */
-class ServerTestHelper
+class Wrench_Tests_ServerTestHelper
 {
     const TEST_SERVER_PORT_MIN = 16666;
     const TEST_SERVER_PORT_MAX = 52222;
@@ -64,8 +63,8 @@ class ServerTestHelper
             $this->getCommand(),
             array(
                 0 => array('file', '/dev/null', 'r'),
-                1 => array('file', __DIR__ . '/../../../build/server.log', 'a+'),
-                2 => array('file', __DIR__ . '/../../../build/server.err.log', 'a+')
+                1 => array('file', '/tmp/server.log', 'a+'),
+                2 => array('file', '/tmp/server.err.log', 'a+')
             ),
             $this->pipes,
             __DIR__ . '../'

@@ -1,21 +1,14 @@
 <?php
 
-namespace Wrench\Tests\Payload;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Payload\Payload;
-use Wrench\Tests\Test;
-use \Exception;
-
 /**
  * Payload test
  */
-abstract class PayloadTest extends Test
+abstract class Wrench_Tests_Payload_PayloadTest extends Wrench_Tests_Test
 {
     /**
      * A fresh instance of the class being tested
      *
-     * @var Payload
+     * @var Wrench_Payload_Payload
      */
     protected $payload;
 
@@ -70,8 +63,8 @@ abstract class PayloadTest extends Test
      */
     public function testEncodeTypeReflection($type, $payload)
     {
-        $this->payload->encode($payload, Protocol::TYPE_TEXT);
-        $this->assertEquals(Protocol::TYPE_TEXT, $this->payload->getType(), 'Encode retains type information');
+        $this->payload->encode($payload, Wrench_Protocol_Protocol::TYPE_TEXT);
+        $this->assertEquals(Wrench_Protocol_Protocol::TYPE_TEXT, $this->payload->getType(), 'Encode retains type information');
     }
 
     /**
@@ -80,7 +73,7 @@ abstract class PayloadTest extends Test
      */
     public function testEncodePayloadReflection($type, $payload)
     {
-        $this->payload->encode($payload, Protocol::TYPE_TEXT);
+        $this->payload->encode($payload, Wrench_Protocol_Protocol::TYPE_TEXT);
         $this->assertEquals($payload, $this->payload->getPayload(), 'Encode retains payload information');
     }
 
@@ -90,7 +83,7 @@ abstract class PayloadTest extends Test
      */
     public function testSendToSocket($type, $payload)
     {
-        $successfulSocket = $this->getMock('Wrench\Socket\ClientSocket', array(), array('wss://localhost:8000'));
+        $successfulSocket = $this->getMock('Wrench_Socket_ClientSocket', array(), array('wss://localhost:8000'));
         $failedSocket = clone $successfulSocket;
 
         $successfulSocket->expects($this->any())
@@ -126,15 +119,15 @@ abstract class PayloadTest extends Test
     {
         return array(
             array(
-                Protocol::TYPE_TEXT,
+                Wrench_Protocol_Protocol::TYPE_TEXT,
                 "123456\x007890!@#$%^&*()qwe\trtyuiopQWERTYUIOPasdfghjklASFGH\n
                 JKLzxcvbnmZXCVBNM,./<>?;[]{}-=_+\|'asdad0x11\aasdassasdasasdsd"
             ),
             array(
-                Protocol::TYPE_TEXT,
+                Wrench_Protocol_Protocol::TYPE_TEXT,
                 pack('CCCCCCC', 0x00, 0x01, 0x02, 0x03, 0x04, 0xff, 0xf0)
             ),
-            array(Protocol::TYPE_TEXT, ' ')
+            array(Wrench_Protocol_Protocol::TYPE_TEXT, ' ')
         );
     }
 }

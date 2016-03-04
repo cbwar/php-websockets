@@ -1,27 +1,16 @@
 <?php
 
-namespace Wrench\Tests;
-
-use Wrench\Application\EchoApplication;
-use Wrench\Protocol\Protocol;
-use Wrench\Connection;
-use Wrench\Tests\Test;
-use Wrench\Socket;
-
-use \InvalidArgumentException;
-use \PHPUnit_Framework_Error;
-
 /**
  * Tests the Connection class
  */
-class ConnectionTest extends Test
+class Wrench_Tests_ConnectionTest extends Wrench_Tests_Test
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     protected function getClass()
     {
-        return 'Wrench\Connection';
+        return 'Wrench_Connection';
     }
 
     /**
@@ -91,7 +80,7 @@ class ConnectionTest extends Test
 
     /**
      * @dataProvider getValidHandshakeData
-     * @expectedException Wrench\Exception\HandshakeException
+     * @expectedException Wrench_Exception_HandshakeException
      */
     public function testHandshakeBadSocket($path, $request)
     {
@@ -141,7 +130,7 @@ class ConnectionTest extends Test
     }
 
     /**
-     * @return Socket
+     * @return Wrench_Socket_Socket
      */
     protected function getConnectedSocket()
     {
@@ -155,7 +144,7 @@ class ConnectionTest extends Test
     }
 
     /**
-     * @return Socket
+     * @return Wrench_Socket_Socket
      */
     protected function getNotConnectedSocket()
     {
@@ -174,7 +163,7 @@ class ConnectionTest extends Test
 
         $application = $this->getMockApplication();
 
-        $server = $this->getMock('Wrench\Server', array(), array(), '', false);
+        $server = $this->getMock('Wrench_Server', array(), array(), '', false);
         $server->registerApplication($path, $application);
 
         $manager->expects($this->any())
@@ -203,7 +192,7 @@ class ConnectionTest extends Test
                     ->method('onData')
                     ->will($this->returnValue(true));
 
-        $server = $this->getMock('Wrench\Server', array(), array(), '', false);
+        $server = $this->getMock('Wrench_Server', array(), array(), '', false);
         $server->registerApplication($path, $application);
 
         $manager->expects($this->any())
@@ -224,31 +213,31 @@ class ConnectionTest extends Test
     }
 
     /**
-     * @return ConnectionManager
+     * @return Wrench_ConnectionManager
      */
     protected function getMockConnectionManager()
     {
-        return $this->getMock('Wrench\ConnectionManager', array(), array(), '', false);
+        return $this->getMock('Wrench_ConnectionManager', array(), array(), '', false);
     }
 
     /**
      * Gets a mock socket
      *
-     * @return Socket
+     * @return Wrench_Socket_Socket
      */
     protected function getMockSocket()
     {
-        return $this->getMock('Wrench\Socket\ServerClientSocket', array(), array(), '', false);
+        return $this->getMock('Wrench_Socket_ServerClientSocket', array(), array(), '', false);
     }
 
     /**
      * Gets a mock application
      *
-     * @return EchoApplication
+     * @return Wrench_Application_EchoApplication
      */
     protected function getMockApplication()
     {
-        return $this->getMock('Wrench\Application\EchoApplication');
+        return $this->getMock('Wrench_Application_EchoApplication');
     }
 
     /**
@@ -259,7 +248,7 @@ class ConnectionTest extends Test
     public function getValidCloseCodes()
     {
         $arguments = array();
-        foreach (Protocol::$closeReasons as $code => $reason) {
+        foreach (Wrench_Protocol_Protocol::$closeReasons as $code => $reason) {
             $arguments[] = array($code);
         }
         return $arguments;

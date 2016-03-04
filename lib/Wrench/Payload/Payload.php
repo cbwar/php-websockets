@@ -1,27 +1,18 @@
 <?php
 
-namespace Wrench\Payload;
-
-use Wrench\Exception\PayloadException;
-use Wrench\Frame\Frame;
-
-use Wrench\Exception\FrameException;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Socket\Socket;
 
 /**
- * Payload class
+ * Wrench_Payload_Payload class
  *
  * Represents a WebSocket protocol payload, which may be made up of multiple
  * frames.
  */
-abstract class Payload
+abstract class Wrench_Payload_Payload
 {
     /**
      * A payload may consist of one or more frames
      *
-     * @var Frame[]
+     * @var Wrench_Frame_Frame[]
      */
     protected $frames = array();
 
@@ -48,8 +39,8 @@ abstract class Payload
     /**
      * Gets the frame into which data should be receieved
      *
-     * @throws PayloadException
-     * @return Frame
+     * @throws Wrench_Exception_PayloadException
+     * @return Wrench_Frame_Frame
      */
     protected function getReceivingFrame()
     {
@@ -57,7 +48,7 @@ abstract class Payload
 
         if ($current->isComplete()) {
             if ($current->isFinal()) {
-                throw new PayloadException('Payload cannot receieve data: it is already complete');
+                throw new Wrench_Exception_PayloadException('Wrench_Payload_Payload cannot receieve data: it is already complete');
             } else {
                 $this->frames[] = $current = $this->getFrame();
             }
@@ -69,7 +60,7 @@ abstract class Payload
     /**
      * Get a frame object
      *
-     * @return Frame
+     * @return Wrench_Frame_Frame
      */
     abstract protected function getFrame();
 
@@ -89,10 +80,10 @@ abstract class Payload
      * @param string $data
      * @param int $type
      * @param boolean $masked
-     * @return Payload
+     * @return Wrench_Payload_Payload
      * @todo No splitting into multiple frames just yet
      */
-    public function encode($data, $type = Protocol::TYPE_TEXT, $masked = false)
+    public function encode($data, $type = Wrench_Protocol_Protocol::TYPE_TEXT, $masked = false)
     {
         $this->frames = array();
 
@@ -123,7 +114,7 @@ abstract class Payload
             if ($this->getCurrentFrame()->isFinal()) {
                 return $this->getCurrentFrame()->getRemainingData();
             }
-        } catch (FrameException $e) {
+        } catch (Wrench_Exception_FrameException $e) {
             return null;
         }
 
@@ -141,10 +132,10 @@ abstract class Payload
     }
 
     /**
-     * @param Socket $socket
+     * @param Wrench_Socket_Socket $socket
      * @return boolean
      */
-    public function sendToSocket(Socket $socket)
+    public function sendToSocket(Wrench_Socket_Socket $socket)
     {
         $success = true;
         foreach ($this->frames as $frame) {
@@ -203,7 +194,7 @@ abstract class Payload
     {
         try {
             return $this->getPayload();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // __toString must not throw an exception
             return '';
         }
@@ -214,13 +205,13 @@ abstract class Payload
      *
      * The type of a payload is taken from its first frame
      *
-     * @throws PayloadException
+     * @throws Wrench_Exception_PayloadException
      * @return int
      */
     public function getType()
     {
         if (!isset($this->frames[0])) {
-            throw new PayloadException('Cannot tell payload type yet');
+            throw new Wrench_Exception_PayloadException('Cannot tell payload type yet');
         }
         return $this->frames[0]->getType();
     }

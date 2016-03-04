@@ -1,12 +1,7 @@
 <?php
 
-namespace Wrench\Tests\Socket;
 
-use Wrench\Tests\Test;
-use \Exception;
-use Wrench\Socket\Socket;
-
-abstract class SocketTest extends Test
+abstract class Wrench_Tests_Socket_SocketTest extends Wrench_Tests_Test
 {
     /**
      * Require constructor testing
@@ -29,8 +24,8 @@ abstract class SocketTest extends Test
      */
     public function testGetNamePart($name, $ip, $port)
     {
-        $this->assertEquals($ip, Socket::getNamePart($name, Socket::NAME_PART_IP), 'splits ip correctly');
-        $this->assertEquals($port, Socket::getNamePart($name, Socket::NAME_PART_PORT), 'splits port correctly');
+        $this->assertEquals($ip, Wrench_Socket_Socket::getNamePart($name, Wrench_Socket_Socket::NAME_PART_IP), 'splits ip correctly');
+        $this->assertEquals($port, Wrench_Socket_Socket::getNamePart($name, Wrench_Socket_Socket::NAME_PART_PORT), 'splits port correctly');
     }
 
     /**

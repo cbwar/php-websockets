@@ -1,11 +1,6 @@
 <?php
 
-namespace Wrench\Tests\Protocol;
-
-use Wrench\Tests\Test;
-use \Exception;
-
-abstract class ProtocolTest extends Test
+abstract class Wrench_Tests_Protocol_ProtocolTest extends Wrench_Tests_Test
 {
     /**
      * @see PHPUnit_Framework_TestCase::setUp()
@@ -97,7 +92,7 @@ abstract class ProtocolTest extends Test
     {
         try {
             $this->getInstance()->validateOriginUri($uri);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Valid URI validated as invalid: ' . $e);
         }
     }

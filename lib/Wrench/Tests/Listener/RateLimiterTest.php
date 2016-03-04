@@ -1,18 +1,14 @@
 <?php
 
-namespace Wrench\Tests\Listener;
 
-use Wrench\Listener\RateLimiter;
-use Wrench\Tests\Listener\ListenerTest;
-
-class RateLimiterTest extends ListenerTest
+class Wrench_Tests_Listener_RateLimiterTest extends Wrench_Tests_Listener_ListenerTest
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     public function getClass()
     {
-        return 'Wrench\Listener\RateLimiter';
+        return 'Wrench_Listener_RateLimiter';
     }
 
     /**
@@ -42,7 +38,7 @@ class RateLimiterTest extends ListenerTest
 
     protected function getConnection()
     {
-        $connection = $this->getMock('Wrench\Connection', array(), array(), '', false);
+        $connection = $this->getMock('Wrench_Connection', array(), array(), '', false);
 
         $connection
             ->expects($this->any())
@@ -54,7 +50,7 @@ class RateLimiterTest extends ListenerTest
             ->method('getId')
             ->will($this->returnValue('abcdef01234567890'));
 
-        $manager = $this->getMock('Wrench\ConnectionManager', array(), array(), '', false);
+        $manager = $this->getMock('Wrench_ConnectionManager', array(), array(), '', false);
         $manager->expects($this->any())->method('count')->will($this->returnValue(5));
 
         $connection

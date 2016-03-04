@@ -1,42 +1,27 @@
 <?php
 
-namespace Wrench;
 
-use Wrench\Payload\PayloadHandler;
-use Wrench\Protocol\Protocol;
-use Wrench\Payload\Payload;
-use Wrench\Util\Configurable;
-use Wrench\Socket\ServerClientSocket;
-use Wrench\Server;
-use Wrench\Exception as WrenchException;
-use Wrench\Exception\CloseException;
-use Wrench\Exception\ConnectionException;
-use Wrench\Exception\HandshakeException;
-use Wrench\Exception\BadRequestException;
-
-use \Exception;
-use \RuntimeException;
 
 /**
  * Represents a client connection on the server side
  *
- * i.e. the `Server` manages a bunch of `Connection`s
+ * i.e. the `Wrench_Server` manages a bunch of `Wrench_Connection`s
  */
-class Connection extends Configurable
+class Wrench_Connection extends Wrench_Util_Configurable
 {
     /**
      * The connection manager
      *
-     * @var ConnectionManager
+     * @var Wrench_ConnectionManager
      */
     protected $manager;
 
     /**
-     * Socket object
+     * Wrench_Socket_Socket object
      *
      * Wraps the client connection resource
      *
-     * @var ServerClientSocket
+     * @var Wrench_Socket_ServerClientSocket
      */
     protected $socket;
 
@@ -50,7 +35,7 @@ class Connection extends Configurable
     /**
      * The application this connection belongs to
      *
-     * @var Application\Application
+     * @var Wrench_Application_Application
      */
     protected $application = null;
 
@@ -85,27 +70,27 @@ class Connection extends Configurable
     protected $queryParams = null;
 
     /**
-     * Connection ID
+     * Wrench_Connection ID
      *
      * @var string|null
      */
     protected $id = null;
 
     /**
-     * @var PayloadHandler
+     * @var Wrench_Payload_PayloadHandler
      */
     protected $payloadHandler;
 
     /**
      * Constructor
      *
-     * @param ConnectionManager  $manager
-     * @param ServerClientSocket $socket
+     * @param Wrench_ConnectionManager  $manager
+     * @param Wrench_Socket_ServerClientSocket $socket
      * @param array              $options
      */
     public function __construct(
-        ConnectionManager $manager,
-        ServerClientSocket $socket,
+        Wrench_ConnectionManager $manager,
+        Wrench_Socket_ServerClientSocket $socket,
         array $options = array()
     ) {
         $this->manager = $manager;
@@ -123,7 +108,7 @@ class Connection extends Configurable
     /**
      * Gets the connection manager of this connection
      *
-     * @return \Wrench\ConnectionManager
+     * @return Wrench_ConnectionManager
      */
     public function getConnectionManager()
     {
@@ -131,7 +116,7 @@ class Connection extends Configurable
     }
 
     /**
-     * @see Wrench\Util.Configurable::configure()
+     * @see Wrench_Util_Configurable::configure()
      */
     protected function configure(array $options)
     {
@@ -145,7 +130,7 @@ class Connection extends Configurable
 
     protected function configurePayloadHandler()
     {
-        $this->payloadHandler = new PayloadHandler(
+        $this->payloadHandler = new Wrench_Payload_PayloadHandler(
             array($this, 'handlePayload'),
             $this->options
         );
@@ -212,9 +197,9 @@ class Connection extends Configurable
      * Performs a websocket handshake
      *
      * @param string $data
-     * @throws BadRequestException
-     * @throws HandshakeException
-     * @throws WrenchException
+     * @throws Wrench_Exception_BadRequestException
+     * @throws Wrench_Exception_HandshakeException
+     * @throws Wrench_Exception_Exception
      */
     public function handshake($data)
     {
@@ -227,22 +212,22 @@ class Connection extends Configurable
 
             $this->application = $this->manager->getApplicationForPath($path);
             if (!$this->application) {
-                throw new BadRequestException('Invalid application');
+                throw new Wrench_Exception_BadRequestException('Invalid application');
             }
 
             $this->manager->getServer()->notify(
-                Server::EVENT_HANDSHAKE_REQUEST,
+                Wrench_Server::EVENT_HANDSHAKE_REQUEST,
                 array($this, $path, $origin, $key, $extensions)
             );
 
             $response = $this->protocol->getResponseHandshake($key);
 
             if (!$this->socket->isConnected()) {
-                throw new HandshakeException('Socket is not connected');
+                throw new Wrench_Exception_HandshakeException('Wrench_Socket_Socket is not connected');
             }
 
             if ($this->socket->send($response) === false) {
-                throw new HandshakeException('Could not send handshake response');
+                throw new Wrench_Exception_HandshakeException('Could not send handshake response');
             }
 
             $this->handshaked = true;
@@ -256,14 +241,14 @@ class Connection extends Configurable
             ), 'info');
 
             $this->manager->getServer()->notify(
-                Server::EVENT_HANDSHAKE_SUCCESSFUL,
+                Wrench_Server::EVENT_HANDSHAKE_SUCCESSFUL,
                 array($this)
             );
 
             if (method_exists($this->application, 'onConnect')) {
                 $this->application->onConnect($this);
             }
-        } catch (WrenchException $e) {
+        } catch (Wrench_Exception_Exception $e) {
             $this->log('Handshake failed: ' . $e, 'err');
             $this->close($e);
         }
@@ -303,24 +288,24 @@ class Connection extends Configurable
     /**
      * Handle a complete payload received from the client
      *
-     * Public because called from our PayloadHandler
+     * Public because called from our Wrench_Payload_PayloadHandler
      *
-     * @param Payload $payload
+     * @param Wrench_Payload_Payload $payload
      */
-    public function handlePayload(Payload $payload)
+    public function handlePayload(Wrench_Payload_Payload $payload)
     {
         $app = $this->getClientApplication();
 
         $this->log('Handling payload: ' . $payload->getPayload(), 'debug');
 
         switch ($type = $payload->getType()) {
-            case Protocol::TYPE_TEXT:
+            case Wrench_Protocol_Protocol::TYPE_TEXT:
                 if (method_exists($app, 'onData')) {
                     $app->onData($payload, $this);
                 }
                 return;
 
-            case Protocol::TYPE_BINARY:
+            case Wrench_Protocol_Protocol::TYPE_BINARY:
                 if(method_exists($app, 'onBinaryData')) {
                     $app->onBinaryData($payload, $this);
                 } else {
@@ -328,9 +313,9 @@ class Connection extends Configurable
                 }
             break;
 
-            case Protocol::TYPE_PING:
+            case Wrench_Protocol_Protocol::TYPE_PING:
                 $this->log('Ping received', 'notice');
-                $this->send($payload->getPayload(), Protocol::TYPE_PONG);
+                $this->send($payload->getPayload(), Wrench_Protocol_Protocol::TYPE_PONG);
                 $this->log('Pong!', 'debug');
             break;
 
@@ -339,18 +324,18 @@ class Connection extends Configurable
              * unidirectional heartbeat.  A response to an unsolicited Pong
              * frame is not expected.
              */
-            case Protocol::TYPE_PONG:
+            case Wrench_Protocol_Protocol::TYPE_PONG:
                 $this->log('Received unsolicited pong', 'info');
             break;
 
-            case Protocol::TYPE_CLOSE:
+            case Wrench_Protocol_Protocol::TYPE_CLOSE:
                 $this->log('Close frame received', 'notice');
                 $this->close();
                 $this->log('Disconnected', 'info');
             break;
 
             default:
-                throw new ConnectionException('Unhandled payload type');
+                throw new Wrench_Exception_ConnectionException('Unhandled payload type');
         }
     }
 
@@ -359,14 +344,14 @@ class Connection extends Configurable
      *
      * @param string $type
      * @param string $data
-     * @throws HandshakeException
-     * @throws ConnectionException
+     * @throws Wrench_Exception_HandshakeException
+     * @throws Wrench_Exception_ConnectionException
      * @return boolean
      */
-    public function send($data, $type = Protocol::TYPE_TEXT)
+    public function send($data, $type = Wrench_Protocol_Protocol::TYPE_TEXT)
     {
         if (!$this->handshaked) {
-            throw new HandshakeException('Connection is not handshaked');
+            throw new Wrench_Exception_HandshakeException('Wrench_Connection is not handshaked');
         }
 
         $payload = $this->protocol->getPayload();
@@ -376,7 +361,7 @@ class Connection extends Configurable
 
         if (!$payload->sendToSocket($this->socket)) {
             $this->log('Could not send payload to client', 'warn');
-            throw new ConnectionException('Could not send data to connection: ' . $this->socket->getLastError());
+            throw new Wrench_Exception_ConnectionException('Could not send data to connection: ' . $this->socket->getLastError());
         }
 
         return true;
@@ -385,7 +370,7 @@ class Connection extends Configurable
     /**
      * Processes data on the socket
      *
-     * @throws CloseException
+     * @throws Wrench_Exception_CloseException
      */
     public function process()
     {
@@ -393,7 +378,7 @@ class Connection extends Configurable
         $bytes = strlen($data);
 
         if ($bytes === 0 || $data === false) {
-            throw new CloseException('Error reading data from socket: ' . $this->socket->getLastError());
+            throw new Wrench_Exception_CloseException('Error reading data from socket: ' . $this->socket->getLastError());
         }
 
         $this->onData($data);
@@ -421,7 +406,7 @@ class Connection extends Configurable
      *
      * @return boolean|null
      */
-    public function close($code = Protocol::CLOSE_NORMAL)
+    public function close($code = Wrench_Protocol_Protocol::CLOSE_NORMAL)
     {
         try {
             if (!$this->handshaked) {
@@ -514,7 +499,7 @@ class Connection extends Configurable
     /**
      * Gets the socket object
      *
-     * @return Socket\ServerClientSocket
+     * @return Wrench_Socket_ServerClientSocket
      */
     public function getSocket()
     {
@@ -524,7 +509,7 @@ class Connection extends Configurable
     /**
      * Gets the client application
      *
-     * @return Application
+     * @return Wrench_Application_Application
      */
     public function getClientApplication()
     {

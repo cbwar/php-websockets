@@ -1,14 +1,10 @@
 <?php
 
-namespace Wrench\Tests\Socket;
-
-use \Exception;
-
-class ServerClientSocketTest extends SocketTest
+class Wrench_Tests_Socket_ServerClientSocketTest extends Wrench_Tests_Socket_SocketTest
 {
     public function getClass()
     {
-        return 'Wrench\Socket\ServerClientSocket';
+        return 'Wrench_Socket_ServerClientSocket';
     }
 
     /**
@@ -23,7 +19,7 @@ class ServerClientSocketTest extends SocketTest
     }
 
     /**
-     * @expectedException Wrench\Exception\SocketException
+     * @expectedException Wrench_Exception_SocketException
      * @depends testConstructor
      */
     public function testGetIpTooSoon($instance)
@@ -32,7 +28,7 @@ class ServerClientSocketTest extends SocketTest
     }
 
     /**
-     * @expectedException Wrench\Exception\SocketException
+     * @expectedException Wrench_Exception_SocketException
      * @depends testConstructor
      */
     public function testGetPortTooSoon($instance)

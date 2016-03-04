@@ -7,22 +7,19 @@
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details. */
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+require "../bootstrap.php";
 
-require __DIR__ . '/../vendor/autoload.php';
-
-$server = new \Wrench\Server('ws://localhost:8000/', array(
-    'allowed_origins'            => array(
+$server = new Wrench_Server('ws://0.0.0.0:8000/', array(
+    'allowed_origins' => array(
         'mysite.localhost'
     ),
 // Optional defaults:
 //     'check_origin'               => true,
-//     'connection_manager_class'   => 'Wrench\ConnectionManager',
+//     'connection_manager_class'   => 'Wrench_ConnectionManager',
 //     'connection_manager_options' => array(
 //         'timeout_select'           => 0,
 //         'timeout_select_microsec'  => 200000,
-//         'socket_master_class'      => 'Wrench\Socket\ServerSocket',
+//         'socket_master_class'      => 'Wrench_Socket_ServerSocket',
 //         'socket_master_options'    => array(
 //             'backlog'                => 50,
 //             'ssl_cert_file'          => null,
@@ -31,9 +28,9 @@ $server = new \Wrench\Server('ws://localhost:8000/', array(
 //             'timeout_accept'         => 5,
 //             'timeout_socket'         => 5,
 //         ),
-//         'connection_class'         => 'Wrench\Connection',
+//         'connection_class'         => 'Wrench_Connection',
 //         'connection_options'       => array(
-//             'socket_class'           => 'Wrench\Socket\ServerClientSocket',
+//             'socket_class'           => 'Wrench_Socket_ServerClientSocket',
 //             'socket_options'         => array(),
 //             'connection_id_secret'   => 'asu5gj656h64Da(0crt8pud%^WAYWW$u76dwb',
 //             'connection_id_algo'     => 'sha512'
@@ -41,5 +38,5 @@ $server = new \Wrench\Server('ws://localhost:8000/', array(
 //     )
 ));
 
-$server->registerApplication('echo', new \Wrench\Application\EchoApplication());
+$server->registerApplication('echo', new Wrench_Application_EchoApplication());
 $server->run();

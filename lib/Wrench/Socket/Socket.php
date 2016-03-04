@@ -1,23 +1,15 @@
 <?php
-
-namespace Wrench\Socket;
-
-use Wrench\Resource;
-use Wrench\Exception\SocketException;
-use Wrench\Util\Configurable;
-use \InvalidArgumentException;
-
 /**
- * Socket class
+ * Wrench_Socket_Socket class
  *
  * Implements low level logic for connecting, serving, reading to, and
  * writing from WebSocket connections using PHP's streams.
  *
- * Unlike in previous versions of this library, a Socket instance now
+ * Unlike in previous versions of this library, a Wrench_Socket_Socket instance now
  * represents a single underlying socket resource. It's designed to be used
  * by aggregation, rather than inheritance.
  */
-abstract class Socket extends Configurable implements Resource
+abstract class Wrench_Socket_Socket extends Wrench_Util_Configurable implements Wrench_Resource
 {
     /**
      * Default timeout for socket operations (reads, writes)
@@ -32,7 +24,7 @@ abstract class Socket extends Configurable implements Resource
     const DEFAULT_RECEIVE_LENGTH = '1400';
 
     /**#@+
-     * Socket name parts
+     * Wrench_Socket_Socket name parts
      *
      * @var int
      */
@@ -117,7 +109,7 @@ abstract class Socket extends Configurable implements Resource
      * @param string $name (from $this->getName() usually)
      * @param int<0, 1> $part
      * @return string
-     * @throws SocketException
+     * @throws Wrench_Exception_SocketException
      */
     public static function getNamePart($name, $part)
     {
@@ -128,7 +120,7 @@ abstract class Socket extends Configurable implements Resource
         $parts = explode(':', $name);
 
         if (count($parts) < 2) {
-            throw new SocketException('Could not parse name parts: ' . $name);
+            throw new Wrench_Exception_SocketException('Could not parse name parts: ' . $name);
         }
 
         if ($part == self::NAME_PART_PORT) {
@@ -143,7 +135,7 @@ abstract class Socket extends Configurable implements Resource
     /**
      * Gets the IP address of the socket
      *
-     * @throws \Wrench\Exception\SocketException If the IP address cannot be obtained
+     * @throws Wrench_Exception_SocketException If the IP address cannot be obtained
      * @return string
      */
     public function getIp()
@@ -153,14 +145,14 @@ abstract class Socket extends Configurable implements Resource
         if ($name) {
             return self::getNamePart($name, self::NAME_PART_IP);
         } else {
-            throw new SocketException('Cannot get socket IP address');
+            throw new Wrench_Exception_SocketException('Cannot get socket IP address');
         }
     }
 
     /**
      * Gets the port of the socket
      *
-     * @throws \Wrench\Exception\SocketException If the port cannot be obtained
+     * @throws Wrench_Exception_SocketException If the port cannot be obtained
      * @return string
      */
     public function getPort()
@@ -170,7 +162,7 @@ abstract class Socket extends Configurable implements Resource
         if ($name) {
             return self::getNamePart($name, self::NAME_PART_PORT);
         } else {
-            throw new SocketException('Cannot get socket IP address');
+            throw new Wrench_Exception_SocketException('Cannot get socket IP address');
         }
     }
 
@@ -220,7 +212,7 @@ abstract class Socket extends Configurable implements Resource
     }
 
     /**
-     * @see Wrench.Resource::getResource()
+     * @see Wrench.Wrench_Resource::getResource()
      */
     public function getResource()
     {
@@ -228,7 +220,7 @@ abstract class Socket extends Configurable implements Resource
     }
 
     /**
-     * @see Wrench.Resource::getResourceId()
+     * @see Wrench.Wrench_Resource::getResourceId()
      */
     public function getResourceId()
     {
@@ -237,13 +229,13 @@ abstract class Socket extends Configurable implements Resource
 
     /**
      * @param string $data Binary data to send down the socket
-     * @throws SocketException
+     * @throws Wrench_Exception_SocketException
      * @return boolean|int The number of bytes sent or false on error
      */
     public function send($data)
     {
         if (!$this->isConnected()) {
-            throw new SocketException('Socket is not connected');
+            throw new Wrench_Exception_SocketException('Wrench_Socket_Socket is not connected');
         }
 
         $length = strlen($data);

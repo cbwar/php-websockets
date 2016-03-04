@@ -1,10 +1,7 @@
 <?php
 
-namespace Wrench;
 
-use Wrench\Server;
-
-class BasicServer extends Server
+class Wrench_BasicServer extends Wrench_Server
 {
     protected $rateLimiter;
     protected $originPolicy;
@@ -24,15 +21,15 @@ class BasicServer extends Server
     }
 
     /**
-     * @see Wrench.Server::configure()
+     * @see Wrench.Wrench_Server::configure()
      */
     protected function configure(array $options)
     {
         $options = array_merge(array(
             'check_origin'         => true,
             'allowed_origins'      => array(),
-            'origin_policy_class'  => 'Wrench\Listener\OriginPolicy',
-            'rate_limiter_class'   => 'Wrench\Listener\RateLimiter',
+            'origin_policy_class'  => 'Wrench_Listener_OriginPolicy',
+            'rate_limiter_class'   => 'Wrench_Listener_RateLimiter',
             'rate_limiter_options' => array(
                 'connections'         => 200, // Total
                 'connections_per_ip'  => 5,   // At once

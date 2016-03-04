@@ -1,22 +1,18 @@
 <?php
 
-namespace Wrench\Payload;
-
-use Wrench\Frame\HybiFrame;
-use Wrench\Exception\PayloadException;
 
 /**
  * Gets a HyBi payload
  * @author Dominic
  *
  */
-class HybiPayload extends Payload
+class Wrench_Payload_HybiPayload extends Wrench_Payload_Payload
 {
     /**
-     * @see Wrench\Payload.Payload::getFrame()
+     * @see Wrench_Payload_Payload::getFrame()
      */
     protected function getFrame()
     {
-        return new HybiFrame();
+        return new Wrench_Frame_HybiFrame();
     }
 }

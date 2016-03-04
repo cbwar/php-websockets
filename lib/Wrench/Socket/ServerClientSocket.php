@@ -1,10 +1,6 @@
 <?php
 
-namespace Wrench\Socket;
-
-use Wrench\Socket\Socket;
-
-class ServerClientSocket extends Socket
+class Wrench_Socket_ServerClientSocket extends Wrench_Socket_Socket
 {
     /**
      * Constructor

@@ -1,21 +1,17 @@
 <?php
 
-namespace Wrench\Listener;
 
-use Wrench\Util\Configurable;
-use Wrench\Server;
-
-class RateLimiter extends Configurable implements Listener
+class Wrench_Listener_RateLimiter extends Wrench_Util_Configurable implements Wrench_Listener_Listener
 {
     /**
      * The server being limited
      *
-     * @var Server
+     * @var Wrench_Server
      */
     protected $server;
 
     /**
-     * Connection counts per IP address
+     * Wrench_Connection counts per IP address
      *
      * @var array<int>
      */
@@ -53,24 +49,24 @@ class RateLimiter extends Configurable implements Listener
     }
 
     /**
-     * @see Wrench\Listener.Listener::listen()
+     * @see Wrench_Listener_Listener::listen()
      */
-    public function listen(Server $server)
+    public function listen(Wrench_Server $server)
     {
         $this->server = $server;
 
         $server->addListener(
-            Server::EVENT_SOCKET_CONNECT,
+            Wrench_Server::EVENT_SOCKET_CONNECT,
             array($this, 'onSocketConnect')
         );
 
         $server->addListener(
-            Server::EVENT_SOCKET_DISCONNECT,
+            Wrench_Server::EVENT_SOCKET_DISCONNECT,
             array($this, 'onSocketDisconnect')
         );
 
         $server->addListener(
-            Server::EVENT_CLIENT_DATA,
+            Wrench_Server::EVENT_CLIENT_DATA,
             array($this, 'onClientData')
         );
     }
@@ -79,7 +75,7 @@ class RateLimiter extends Configurable implements Listener
      * Event listener
      *
      * @param resource $socket
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     public function onSocketConnect($socket, $connection)
     {
@@ -91,7 +87,7 @@ class RateLimiter extends Configurable implements Listener
      * Event listener
      *
      * @param resource $socket
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     public function onSocketDisconnect($socket, $connection)
     {
@@ -102,7 +98,7 @@ class RateLimiter extends Configurable implements Listener
      * Event listener
      *
      * @param resource $socket
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     public function onClientData($socket, $connection)
     {
@@ -112,7 +108,7 @@ class RateLimiter extends Configurable implements Listener
     /**
      * Idempotent
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     protected function checkConnections($connection)
     {
@@ -126,7 +122,7 @@ class RateLimiter extends Configurable implements Listener
     /**
      * NOT idempotent, call once per connection
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     protected function checkConnectionsPerIp($connection)
     {
@@ -154,7 +150,7 @@ class RateLimiter extends Configurable implements Listener
     /**
      * NOT idempotent, call once per disconnection
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     protected function releaseConnection($connection)
     {
@@ -177,7 +173,7 @@ class RateLimiter extends Configurable implements Listener
     /**
      * NOT idempotent, call once per data
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      */
     protected function checkRequestsPerMinute($connection)
     {
@@ -203,7 +199,7 @@ class RateLimiter extends Configurable implements Listener
     /**
      * Limits the given connection
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      * @param string $limit Reason
      */
     protected function limit($connection, $limit)
@@ -214,7 +210,7 @@ class RateLimiter extends Configurable implements Listener
             $limit
         ), 'notice');
 
-        $connection->close(new RateLimiterException($limit));
+        $connection->close(new Wrench_Exception_RateLimiterException($limit));
     }
 
     /**

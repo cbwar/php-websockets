@@ -1,17 +1,13 @@
 <?php
 
-namespace Wrench\Tests\Listener;
-
-use Wrench\Tests\Listener\ListenerTest;
-
-class OriginPolicyTest extends ListenerTest
+class Wrench_Tests_Listener_OriginPolicyTest extends Wrench_Tests_Listener_ListenerTest
 {
     /**
-     * @see Wrench\Tests.Test::getClass()
+     * @see Wrench\Tests.Wrench_Tests_Test::getClass()
      */
     public function getClass()
     {
-        return 'Wrench\Listener\OriginPolicy';
+        return 'Wrench_Listener_OriginPolicy';
     }
 
     /**
@@ -44,7 +40,7 @@ class OriginPolicyTest extends ListenerTest
     {
         $instance = $this->getInstance($allowed);
 
-        $connection = $this->getMock('Wrench\Connection', array(), array(), '', false);
+        $connection = $this->getMock('Wrench_Connection', array(), array(), '', false);
 
         $connection
             ->expects($this->never())
@@ -73,7 +69,7 @@ class OriginPolicyTest extends ListenerTest
     {
         $instance = $this->getInstance($allowed);
 
-        $connection = $this->getMock('Wrench\Connection', array(), array(), '', false);
+        $connection = $this->getMock('Wrench_Connection', array(), array(), '', false);
 
         $connection
             ->expects($this->once())

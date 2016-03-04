@@ -1,12 +1,6 @@
 <?php
 
-namespace Wrench\Listener;
-
-use Wrench\Connection;
-use Wrench\Exception\InvalidOriginException;
-use Wrench\Server;
-
-class OriginPolicy implements Listener, HandshakeRequestListener
+class Wrench_Listener_OriginPolicy implements Wrench_Listener_Listener, Wrench_Listener_HandshakeRequestListener
 {
     protected $allowed = array();
 
@@ -20,16 +14,16 @@ class OriginPolicy implements Listener, HandshakeRequestListener
      *
      * Closes the connection on handshake from an origin that isn't allowed
      *
-     * @param Connection $connection
+     * @param Wrench_Connection $connection
      * @param string $path
      * @param string $origin
      * @param string $key
      * @param array $extensions
      */
-    public function onHandshakeRequest(Connection $connection, $path, $origin, $key, $extensions)
+    public function onHandshakeRequest(Wrench_Connection $connection, $path, $origin, $key, $extensions)
     {
         if (!$this->isAllowed($origin)) {
-            $connection->close(new InvalidOriginException('Origin not allowed'));
+            $connection->close(new Wrench_Exception_InvalidOriginException('Origin not allowed'));
         }
     }
 
@@ -64,12 +58,12 @@ class OriginPolicy implements Listener, HandshakeRequestListener
     }
 
     /**
-     * @param Server $server
+     * @param Wrench_Server $server
      */
-    public function listen(Server $server)
+    public function listen(Wrench_Server $server)
     {
         $server->addListener(
-            Server::EVENT_HANDSHAKE_REQUEST,
+            Wrench_Server::EVENT_HANDSHAKE_REQUEST,
             array($this, 'onHandshakeRequest')
         );
     }

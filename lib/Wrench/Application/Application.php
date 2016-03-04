@@ -1,11 +1,9 @@
 <?php
 
-namespace Wrench\Application;
-
 /**
- * Wrench Server Application
+ * Wrench Wrench_Server Wrench_Application_Application
  */
-abstract class Application
+abstract class Wrench_Application_Application
 {
     /**
      * Optional: handle a connection
@@ -27,8 +25,8 @@ abstract class Application
     /**
      * Handle data received from a client
      *
-     * @param Payload $payload A payload object, that supports __toString()
-     * @param Connection $connection
+     * @param Wrench_Payload_Payload $payload A payload object, that supports __toString()
+     * @param Wrench_Connection $connection
      */
 	abstract public function onData($payload, $connection);
 }

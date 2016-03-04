@@ -1,29 +1,25 @@
 <?php
 
-namespace Wrench\Tests\Frame;
 
-use Wrench\Frame\HybiFrame;
-use Wrench\Tests\Test;
-
-class BadSubclassFrame extends HybiFrame
+class Wrench_Tests_Frame_BadSubclassFrame extends Wrench_Frame_HybiFrame
 {
     protected $payload = 'asdmlasdkm';
     protected $buffer = false;
 }
 
-class BadSubclassFrameTest extends Test
+class Wrench_Tests_Frame_BadSubclassFrameTest extends Wrench_Tests_Test
 {
     /**
-     * @expectedException Wrench\Exception\FrameException
+     * @expectedException Wrench_Exception_FrameException
      */
     public function testInvalidFrameBuffer()
     {
-        $frame = new BadSubclassFrame();
+        $frame = new Wrench_Tests_Frame_BadSubclassFrame();
         $frame->getFrameBuffer();
     }
 
     protected function getClass()
     {
-        return 'Wrench\Tests\Frame\BadSubclassFrame';
+        return 'Wrench_Tests_Frame_BadSubclassFrame';
     }
 }

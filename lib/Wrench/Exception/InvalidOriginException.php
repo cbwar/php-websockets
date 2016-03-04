@@ -1,24 +1,19 @@
 <?php
 
-namespace Wrench\Exception;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Exception\HandshakeException;
-
 /**
  * Invalid origin exception
  */
-class InvalidOriginException extends HandshakeException
+class Wrench_Exception_InvalidOriginException extends Wrench_Exception_HandshakeException
 {
     /**
      * @param string    $message
      * @param int       $code
-     * @param Exception $previous
+     * @param Wrench_Exception_Exception $previous
      */
     public function __construct($message = null, $code = null, $previous = null)
     {
         if ($code == null) {
-            $code = Protocol::HTTP_FORBIDDEN;
+            $code = Wrench_Protocol_Protocol::HTTP_FORBIDDEN;
         }
         parent::__construct($message, $code, $previous);
     }

@@ -1,22 +1,11 @@
 <?php
 
-namespace Wrench;
-
-use Wrench\Payload\Payload;
-use Wrench\Payload\PayloadHandler;
-use Wrench\Util\Configurable;
-use Wrench\Socket\ClientSocket;
-use Wrench\Protocol\Protocol;
-
-use \InvalidArgumentException;
-use \RuntimeException;
-
 /**
- * Client class
+ * Wrench_Client class
  *
  * Represents a websocket client
  */
-class Client extends Configurable
+class Wrench_Client extends Wrench_Util_Configurable
 {
     /**
      * @var int bytes
@@ -34,7 +23,7 @@ class Client extends Configurable
     protected $origin;
 
     /**
-     * @var ClientSocket
+     * @var Wrench_Socket_ClientSocket
      */
     protected $socket;
 
@@ -53,14 +42,14 @@ class Client extends Configurable
     protected $connected = false;
 
     /**
-     * @var PayloadHandler
+     * @var Wrench_Payload_PayloadHandler
      */
     protected $payloadHandler = null;
 
     /**
      * Complete received payloads
      *
-     * @var array<Payload>
+     * @var array<Wrench_Payload_Payload>
      */
     protected $received = array();
 
@@ -71,8 +60,8 @@ class Client extends Configurable
      * @param string $origin  The origin to include in the handshake (required
      *                          in later versions of the protocol)
      * @param array  $options (optional) Array of options
-     *                         - socket   => Socket instance (otherwise created)
-     *                         - protocol => Protocol
+     *                         - socket   => Wrench_Socket_Socket instance (otherwise created)
+     *                         - protocol => Wrench_Protocol_Protocol
      */
     public function __construct($uri, $origin, array $options = array())
     {
@@ -106,7 +95,7 @@ class Client extends Configurable
     protected function configure(array $options)
     {
         $options = array_merge(array(
-            'socket_class'     => 'Wrench\\Socket\\ClientSocket',
+            'socket_class'     => 'Wrench_Socket_ClientSocket',
             'on_data_callback' => null
         ), $options);
 
@@ -127,18 +116,18 @@ class Client extends Configurable
      */
     protected function configurePayloadHandler()
     {
-        $this->payloadHandler = new PayloadHandler(array($this, 'onData'), $this->options);
+        $this->payloadHandler = new Wrench_Payload_PayloadHandler(array($this, 'onData'), $this->options);
     }
 
     /**
-     * Payload receiver
+     * Wrench_Payload_Payload receiver
      *
-     * Public because called from our PayloadHandler. Don't call us, we'll call
+     * Public because called from our Wrench_Payload_PayloadHandler. Don't call us, we'll call
      * you (via the on_data_callback option).
      *
-     * @param Payload $payload
+     * @param Wrench_Payload_Payload $payload
      */
-    public function onData(Payload $payload)
+    public function onData(Wrench_Payload_Payload $payload)
     {
         $this->received[] = $payload;
         if (($callback = $this->options['on_data_callback'])) {
@@ -164,14 +153,14 @@ class Client extends Configurable
      * Sends data to the socket
      *
      * @param string $data
-     * @param int $type See Protocol::TYPE_*
+     * @param int $type See Wrench_Protocol_Protocol::TYPE_*
      * @param boolean $masked
      * @return boolean Success
      */
-    public function sendData($data, $type = Protocol::TYPE_TEXT, $masked = true)
+    public function sendData($data, $type = Wrench_Protocol_Protocol::TYPE_TEXT, $masked = true)
     {
-        if (is_string($type) && isset(Protocol::$frameTypes[$type])) {
-            $type = Protocol::$frameTypes[$type];
+        if (is_string($type) && isset(Wrench_Protocol_Protocol::$frameTypes[$type])) {
+            $type = Wrench_Protocol_Protocol::$frameTypes[$type];
         }
 
         $payload = $this->protocol->getPayload();
@@ -188,7 +177,7 @@ class Client extends Configurable
     /**
      * Receives data sent by the server
      *
-     * @return array<Payload> Payload received since the last call to receive()
+     * @return array<Wrench_Payload_Payload> Wrench_Payload_Payload received since the last call to receive()
      */
     public function receive()
     {
@@ -260,11 +249,11 @@ class Client extends Configurable
     /**
      * Disconnects the underlying socket, and marks the client as disconnected
      *
-     * @param int $reason Reason for disconnecting. See Protocol::CLOSE_*
-     * @throws Exception\FrameException
-     * @throws Exception\SocketException
+     * @param int $reason Reason for disconnecting. See Wrench_Protocol_Protocol::CLOSE_*
+     * @throws Wrench_Exception_FrameException
+     * @throws Wrench_Exception_SocketException
      */
-    public function disconnect($reason = Protocol::CLOSE_NORMAL)
+    public function disconnect($reason = Wrench_Protocol_Protocol::CLOSE_NORMAL)
     {
         $payload = $this->protocol->getClosePayload($reason);
 

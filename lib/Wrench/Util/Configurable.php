@@ -1,15 +1,10 @@
 <?php
 
-namespace Wrench\Util;
-
-use Wrench\Protocol\Protocol;
-use Wrench\Protocol\Rfc6455Protocol;
-use \InvalidArgumentException;
 
 /**
- * Configurable base class
+ * Wrench_Util_Configurable base class
  */
-abstract class Configurable
+abstract class Wrench_Util_Configurable
 {
     /**
      * @var array
@@ -17,16 +12,16 @@ abstract class Configurable
     protected $options = array();
 
     /**
-     * @var Protocol
+     * @var Wrench_Protocol_Protocol
      */
     protected $protocol;
 
     /**
-     * Configurable constructor
+     * Wrench_Util_Configurable constructor
      *
      * @param array  $options (optional)
      *   Options:
-     *     - protocol             => Wrench\Protocol object, latest protocol
+     *     - protocol             => Wrench_Protocol_Protocol object, latest protocol
      *                                 version used if not specified
      */
     public function __construct(
@@ -44,7 +39,7 @@ abstract class Configurable
     protected function configure(array $options)
     {
         $this->options = array_merge(array(
-            'protocol' => new Rfc6455Protocol()
+            'protocol' => new Wrench_Protocol_Rfc6455Protocol()
         ), $options);
     }
 
@@ -57,7 +52,7 @@ abstract class Configurable
     {
         $protocol = $this->options['protocol'];
 
-        if (!$protocol || !($protocol instanceof Protocol)) {
+        if (!$protocol || !($protocol instanceof Wrench_Protocol_Protocol)) {
             throw new InvalidArgumentException('Invalid protocol option');
         }
 
